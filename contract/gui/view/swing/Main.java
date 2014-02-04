@@ -25,12 +25,14 @@ public class Main extends SwingView {
 
 	private JMenuBar menuBar = new JMenuBar();
 	private JMenu menu = new JMenu();
-	private JMenuItem newContract = new JMenuItem();
+	private JMenuItem newContract = new JMenu();
 	private JMenuItem saveData = new JMenuItem();
 	private JMenuItem openContract = new JMenuItem();
 	private JMenuItem exitProg = new JMenuItem();
 	private JMenu edit = new JMenu();
 	private JMenuItem loadFile = new JMenuItem();
+	private JMenuItem newHire = new JMenuItem();
+	private JMenuItem jobChange = new JMenuItem();
 	private JFileChooser fc;
 	
 	/**
@@ -52,7 +54,14 @@ public class Main extends SwingView {
 		//Set menu option captions and attach mnemonic and listeners to them 
 		newContract.setText("Create New");
 		newContract.setMnemonic(KeyEvent.VK_N);
-		newContract.addActionListener(menuListener);
+		newHire.setText("New hire");
+		newHire.setMnemonic(KeyEvent.VK_H);
+		newHire.addActionListener(menuListener);
+		jobChange.setText("Job change");
+		jobChange.setMnemonic(KeyEvent.VK_C);
+		jobChange.addActionListener(menuListener);
+		newContract.add(newHire);
+		newContract.add(jobChange);
 		openContract.setText("Open Contract");
 		openContract.setMnemonic(KeyEvent.VK_O);
 		openContract.addActionListener(menuListener);
