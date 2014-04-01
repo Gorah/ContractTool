@@ -13,8 +13,7 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JTabbedPane;
 import javax.swing.JTextField;
-import javax.swing.event.DocumentEvent;
-import javax.swing.event.DocumentListener;
+
 
 public class NewHire extends SwingView {
 
@@ -41,7 +40,7 @@ public class NewHire extends SwingView {
 	private JTextField city = new JTextField(15);
 	private JTextField postalCode = new JTextField(10);
 	private JTextField country = new JTextField(15);
-	private JLabel jobL = new JLabel("Job Title:");
+	private JLabel jobL = new JLabel("Position Title:");
 	private JTextField job = new JTextField(15);
 	private JLabel ggsL = new JLabel("GGS:");
 	private JTextField ggs = new JTextField(4);
@@ -52,14 +51,14 @@ public class NewHire extends SwingView {
 	private JLabel conTypeL = new JLabel("Contract Type:");
 	private String[] conTypes = {"Permanent", "Fix Term Contract"};
 	private JComboBox<String> conType = new JComboBox<String>(conTypes);
-	private JLabel workContractL = new JLabel("Employment Type");
+	private JLabel workContractL = new JLabel("Work Contract");
 	private String[] workContractTypes = {"Full Time", "Part Time"};
 	private JComboBox<String> workContract = new JComboBox<String>(workContractTypes);
 	private JLabel managerL = new JLabel("Line Manager:");
 	private JTextField manager = new JTextField(15);
 	private JLabel manPhoneL = new JLabel("Manager's phone number:");
 	private JTextField manPhone = new JTextField(15);
-	private JLabel effDateL = new JLabel("Effective date:");
+	private JLabel effDateL = new JLabel("Start date:");
 	private JTextField effDate = new JTextField(15);
 	private JCheckBox dateTBC = new JCheckBox("Date to be confirmed");
 	private JCheckBox isCTS = new JCheckBox("CTS");
@@ -70,11 +69,9 @@ public class NewHire extends SwingView {
 	private JTextField shiftVal = new JTextField(15);
 	private JLabel reloAmountL = new JLabel("Relocation Amount:");
 	private JTextField reloAmount = new JTextField(15);
-	private JLabel reloLocationL = new JLabel("Relocation location:");
-	private JTextField reloLocation = new JTextField(15);
 	private JLabel hoursWorkL = new JLabel("Hours of work:");
 	private JTextField hoursWork = new JTextField(5);
-	
+	private JCheckBox relocation = new JCheckBox("Relocation");
 	
 	
 	
@@ -247,19 +244,16 @@ public class NewHire extends SwingView {
 		shiftVal.setEnabled(false);
 		posDetails.add(shiftVal, cn);
 		cn.gridy = 7;
-		cn.gridx = 0;
-		posDetails.add(reloAmountL, cn);
-		cn.gridx = 1;
-		reloAmount.getDocument().addDocumentListener(new RelocationListener());
-		posDetails.add(reloAmount, cn);
 		cn.gridx = 2;
-		cn.insets = new Insets(2, 8, 2, 2);
-		reloLocationL.setVisible(false);
-		posDetails.add(reloLocationL, cn);
-		cn.insets = new Insets(2, 2, 2, 2);
+		reloAmountL.setVisible(false);
+		reloAmount.setVisible(false);
+		posDetails.add(reloAmountL, cn);
 		cn.gridx = 3;
-		reloLocation.setVisible(false);
-		posDetails.add(reloLocation, cn);
+		relocation.addActionListener(nhListener);
+		posDetails.add(reloAmount, cn);
+		cn.gridx = 0;
+		posDetails.add(relocation, cn);
+		
 		
 		//Add position details to first tab
 		cn.gridx = 0;
@@ -296,41 +290,16 @@ public class NewHire extends SwingView {
 				} else {
 					shiftVal.setEnabled(false);
 				}
+			} else if (e.getSource() == relocation){
+				if(relocation.isSelected()){
+					reloAmountL.setVisible(true);
+					reloAmount.setVisible(true);
+				} else {
+					reloAmountL.setVisible(false);
+					reloAmount.setVisible(false);
+				}
 			}
 			
-		}
-		
-	}
-	
-	private class RelocationListener implements DocumentListener{
-
-		@Override
-		public void changedUpdate(DocumentEvent arg0) {
-			applyVisibility();
-			
-		}
-
-		@Override
-		public void insertUpdate(DocumentEvent arg0) {
-			applyVisibility();
-			
-		}
-
-		@Override
-		public void removeUpdate(DocumentEvent arg0) {
-			applyVisibility();
-			
-		}
-		
-	}
-	
-	private void applyVisibility(){
-		if(reloAmount.getText().equals("")){
-			reloLocationL.setVisible(false);
-			reloLocation.setVisible(false);
-		} else {
-			reloLocationL.setVisible(true);
-			reloLocation.setVisible(true);
 		}
 		
 	}
