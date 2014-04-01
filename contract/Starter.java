@@ -8,6 +8,7 @@ import javax.swing.UnsupportedLookAndFeelException;
 
 import contract.controller.AppController;
 import contract.gui.view.swing.Main;
+import contract.gui.view.swing.NewHire;
 import contract.gui.view.swing.OpenContract;
 
 public class Starter {
@@ -24,7 +25,8 @@ public class Starter {
 		ContractTool tool = new ContractTool();
 		AppController app = new AppController(tool);
 		app.addViews(new Main(),
-					new OpenContract());
+					new OpenContract(),
+					new NewHire());
 		app.init();
 	}
 

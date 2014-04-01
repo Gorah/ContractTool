@@ -129,9 +129,9 @@ public class Main extends SwingView {
 			if (e.getSource() == exitProg) {
 				//calls exit action
 				appController.exit();
-			} else if (e.getSource() == newContract){
+			} else if (e.getSource() == newHire){
 				//calls rendering a new contract form
-				appController.showNewContract();
+				appController.showNewHire();
 				//adds additional menu item to menu bar
 				edit.setText("Edit");
 				loadFile.setText("Load File");

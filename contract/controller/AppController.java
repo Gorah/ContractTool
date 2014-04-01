@@ -78,8 +78,8 @@ public class AppController {
 	/**
 	 * Method fetching and rendering New Contract view.
 	 */
-	public void showNewContract(){
-		//implement
+	public void showNewHire(){
+		getView(Name.NEW_HIRE).render();
 	}
 	
 	/**

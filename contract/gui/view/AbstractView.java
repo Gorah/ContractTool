@@ -25,7 +25,7 @@ public abstract class AbstractView {
 	 * Newly created views should be registered here before they can be used.
 	 */
 	public enum Name {
-		MAIN, OPEN_CONTRACT, NEW_CONTRACT
+		MAIN, OPEN_CONTRACT, NEW_HIRE
 	}
 	
 	/**
