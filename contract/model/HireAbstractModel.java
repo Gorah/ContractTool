@@ -27,6 +27,15 @@ public abstract class HireAbstractModel {
 		}
 	}
 	
+	/**
+	 * Getter for details map.
+	 * 
+	 * @return Map of String key->value pairs.
+	 */
+	public Map<String, String> getHireDetails(){
+		return hireDetails;
+	}
+	
 	
 	/**
 	 * This method adds/updates a key in hire details map.
