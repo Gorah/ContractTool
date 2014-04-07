@@ -139,6 +139,7 @@ public class Main extends SwingView {
 				edit.add(loadFile);				
 				menuBar.add(edit);
 				mainContainer.setJMenuBar(menuBar);
+				mainContainer.setSize(800, 700);
 			} else if (e.getSource() == loadFile){
 				//if no file chooser is setup, a new instance is created
 				if(fc == null){
