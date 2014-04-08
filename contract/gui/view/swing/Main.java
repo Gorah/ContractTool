@@ -3,7 +3,6 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
 import java.io.File;
-
 import javax.swing.JFileChooser;
 import javax.swing.JFrame;
 import javax.swing.JMenu;
@@ -140,6 +139,7 @@ public class Main extends SwingView {
 				menuBar.add(edit);
 				mainContainer.setJMenuBar(menuBar);
 				mainContainer.setSize(800, 700);
+				
 			} else if (e.getSource() == loadFile){
 				//if no file chooser is setup, a new instance is created
 				if(fc == null){
@@ -156,6 +156,7 @@ public class Main extends SwingView {
                 if (returnVal == JFileChooser.APPROVE_OPTION) {
                     File file = fc.getSelectedFile();
                     //fire data scanning and populating of the fields
+                    appController.readFile(file.getPath());
                 } 
                 fc.setSelectedFile(null);
 			} else if (e.getSource() == openContract){
