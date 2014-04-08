@@ -1,5 +1,6 @@
 package contract.gui.view.swing;
 
+import java.awt.Color;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.Insets;
@@ -7,13 +8,20 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.beans.PropertyVetoException;
 import java.text.SimpleDateFormat;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
 import javax.swing.BorderFactory;
+import javax.swing.InputVerifier;
+import javax.swing.JButton;
 import javax.swing.JCheckBox;
 import javax.swing.JComboBox;
+import javax.swing.JComponent;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JTabbedPane;
 import javax.swing.JTextField;
+import javax.swing.UIManager;
 
 import com.michaelbaranov.microba.calendar.DatePicker;
 
@@ -125,11 +133,17 @@ public class NewHire extends SwingView {
 	public JTextField shiftPayVal = new JTextField(15);
 	public JLabel compCompL = new JLabel("Competition Compliance");
 	public JCheckBox compComp = new JCheckBox();
+	public JButton submitBut = new JButton("Generate Contract");
+	private InputVerifier pureTextVerifier = new NameVerifier();
 
 	
 	public NewHire() {
 		super(Name.NEW_HIRE);
-
+		
+		name.setInputVerifier(pureTextVerifier);
+		lName.setInputVerifier(pureTextVerifier);
+		city.setInputVerifier(pureTextVerifier);
+		
 		//setup of date picker fields
 		//----------------------------
 		//Contract Start Date picker
@@ -678,6 +692,11 @@ public class NewHire extends SwingView {
 		cn.gridy = 1;
 		cn.fill = GridBagConstraints.BOTH;
 		nhPanel.add(tabs, cn);
+		cn.gridy = 2;
+		cn.fill = GridBagConstraints.NONE;
+		cn.anchor = GridBagConstraints.CENTER;
+		nhPanel.add(submitBut, cn);
+		submitBut.addActionListener(new SubmitEventListener());
 		
 		
 	}
@@ -763,6 +782,67 @@ public class NewHire extends SwingView {
 		mainContainer.setVisible(true);
 
 
+	}
+	
+	/**
+	 * Event listener class for submit button
+	 * Before any action is taken, it's purpose is to fire validation 
+	 * on key fields.
+	 * 
+	 * @author Bartosz Kratochwil (bartosz.krtochwil@hp.com)
+	 *
+	 * @version 0.1
+	 *
+	 */
+	class SubmitEventListener implements ActionListener{
+
+		@Override
+		public void actionPerformed(ActionEvent ev) {
+			if(ev.getSource() == submitBut){
+				if(pureTextVerifier.verify(name)){
+					System.out.println("passed");
+				} else {
+					System.out.println("failed");
+				}
+			}
+		}
+		
+	}
+	
+	/**
+	 * Verifier class for pure text fields like name, surname, city etc.
+	 * 
+	 * @author Bartosz Kratochwil (bartosz.krtochwil@hp.com)
+	 *
+	 * @version 0.3
+	 */
+	class NameVerifier extends InputVerifier {
+
+		@Override
+		public boolean verify(JComponent input) {
+			JTextField tField = (JTextField)input;
+			
+			if(!hasNonLetters(tField.getText())){
+				input.setBackground(Color.RED);
+				return false;
+			} else {
+				input.setBackground(UIManager.getColor("TextField.background"));
+				return true;
+			}
+		}
+		
+		//finds if tested string contains only allowed chars
+		private Boolean hasNonLetters(String text){
+			Pattern pattern = Pattern.compile("^[a-zA-Z\\s']+$");
+			Matcher match = pattern.matcher(text);
+
+			while (match.find()) {
+				return true;
+			}
+			
+			return false;
+		}
+		
 	}
 
 }
