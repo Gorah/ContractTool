@@ -681,10 +681,84 @@ public class NewHire extends SwingView {
 		
 		
 	}
+	
+	/**
+	 * This method set all the fields of the form to it's default state. 
+	 * Used to flush the data from the form.
+	 * 
+	 * @author	Bartosz Kratochwil (bartosz.krtochwil@hp.com)
+	 * @version 1.0
+	 */
+	
+	private void clear(){
+		conID.setText("");
+		eeid.setText("");
+		name.setText("");
+		lName.setText("");
+		addressLine1.setText("");
+		addressLine2.setText("");
+		city.setText("");
+		postalCode.setText("");
+		country.setSelectedIndex(0);
+		job.setText("");
+		jobN.setText("");
+		ggs.setText("");
+		location.setText("");
+		bu.setText("");
+		conType.setSelectedIndex(0);
+		workContract.setSelectedIndex(0);
+		manager.setText("");
+		manPhone.setText("");
+		try {
+			effDate.setDate(null);
+		} catch (PropertyVetoException e) {
+			e.printStackTrace();
+		}
+		dateTBC.setSelected(false);
+		isCTS.setSelected(false);
+		annPay.setText("");
+		shiftVal.setText("");
+		reloAmount.setText("");
+		reloAmount.setEnabled(false);
+		hoursWork.setText("");
+		relocation.setSelected(false);
+		reloLocation.setText("");
+		reloLocation.setEnabled(false);
+		signatoryReq.setSelected(false);
+		signatoryName.setText("");
+		signatoryName.setEnabled(false);
+		trial.setSelected(false);
+		trialDuration.setEnabled(false);
+		trialDuration.setText("");
+		signOn.setSelected(false);
+		signOnAmount.setText("");
+		signOnAmount.setEnabled(false);
+		travelSupp.setSelected(false);
+		travelSuppAmount.setText("");
+		travelSuppAmount.setEnabled(false);
+		try {
+			travelSuppDate.setDate(null);
+		} catch (PropertyVetoException e) {
+			e.printStackTrace();
+		}
+		travelSuppDur.setText("");
+		travelSuppDur.setEnabled(false);
+		pencePerMile.setText("");
+		pencePerMile.setEnabled(false);
+		persQualFee.setSelected(false);
+		compMobile.setSelected(false);
+		compCreditCard.setSelected(false);
+		compCar.setSelectedIndex(0);
+		shiftPay.setSelected(false);
+		shiftPayVal.setText("");
+		shiftPayVal.setEnabled(false);
+		compComp.setSelected(false);
+	}
 
 	@Override
 	public void render() {
 		mainContainer.getContentPane().removeAll();
+		clear();
 		mainContainer.add(nhPanel);
 		mainContainer.setVisible(true);
 
