@@ -17,6 +17,7 @@ import javax.swing.JButton;
 import javax.swing.JCheckBox;
 import javax.swing.JComboBox;
 import javax.swing.JComponent;
+import javax.swing.JDialog;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JTabbedPane;
@@ -799,11 +800,24 @@ public class NewHire extends SwingView {
 		@Override
 		public void actionPerformed(ActionEvent ev) {
 			if(ev.getSource() == submitBut){
-				if(pureTextVerifier.verify(name)){
-					System.out.println("passed");
-				} else {
+				if(!pureTextVerifier.verify(name)){
+					JDialog errDial = new JDialog(mainContainer, "Fields verification failed!", false);
+					JPanel contents = new JPanel();
+					JLabel errDetails = new JLabel("Test error message");
+					contents.add(errDetails);
+					errDial.setContentPane(contents);
+					errDial.setSize(300, 200);
+					errDial.setLocationRelativeTo(mainContainer);
+					errDial.setVisible(true);
+					
 					System.out.println("failed");
-				}
+				} 
+				if(!pureTextVerifier.verify(lName)){
+					System.out.println("failed");
+				} 
+				if(!pureTextVerifier.verify(city)){
+					System.out.println("failed");
+				} 
 			}
 		}
 		
@@ -814,33 +828,86 @@ public class NewHire extends SwingView {
 	 * 
 	 * @author Bartosz Kratochwil (bartosz.krtochwil@hp.com)
 	 *
-	 * @version 0.3
+	 * @version 0.9
+	 *
 	 */
 	class NameVerifier extends InputVerifier {
 
 		@Override
 		public boolean verify(JComponent input) {
-			JTextField tField = (JTextField)input;
-			
-			if(!hasNonLetters(tField.getText())){
-				input.setBackground(Color.RED);
+			//Try casting to JTextField. If cast fails element is not compatibile with verifier
+			//and verifier returns false.
+			try{
+				JTextField tField = (JTextField)input;
+				if(!hasNonLetters(tField.getText())){
+					input.setBackground(Color.RED);
+					return false;
+				} else {
+					input.setBackground(UIManager.getColor("TextField.background"));
+					return true;
+				}
+			} catch (ClassCastException e){
+				//error message - to be implemented: error log where it will print
+				System.out.println("NameVerifier attempted to check non-text field element! Cannot verify!");
 				return false;
-			} else {
-				input.setBackground(UIManager.getColor("TextField.background"));
-				return true;
 			}
 		}
 		
 		//finds if tested string contains only allowed chars
 		private Boolean hasNonLetters(String text){
-			Pattern pattern = Pattern.compile("^[a-zA-Z\\s']+$");
+			if(text.equals(null) || text.isEmpty()){
+				return false;
+			}
+			Pattern pattern = Pattern.compile("^[a-zA-Z\\s\\D'-]+$");
 			Matcher match = pattern.matcher(text);
 
-			while (match.find()) {
-				return true;
+			return match.find();
+		}
+		
+	}
+	
+	
+	/**
+	 * Class for amount verifier - it makes sure that all fields with 
+	 * currency amounts follow same rules (contain only digits, 0-1 "." and 0+ ","
+	 * 
+	 * @author Bartosz Kratochwil (bartosz.krtochwil@hp.com)
+	 * @version 1.0
+	 */
+	class AmountVerifier extends InputVerifier{
+
+		/**
+		 * Verification method for component - it attempts to cast it to JTextField.
+		 * 
+		 * @param input JComponent input. 
+		 */
+		@Override
+		public boolean verify(JComponent input) {
+			//Try casting to JTextField. If cast fails element is not compatibile with verifier
+			//and verifier returns false.
+			try{
+				JTextField tField = (JTextField)input;
+				if(isValidAmount(tField.getText())){
+					input.setBackground(UIManager.getColor("TextField.background"));
+					return true;
+				} else {
+					input.setBackground(Color.RED);
+					return false;
+				}
+			} catch (ClassCastException e){
+				//error message - to be implemented: error log where it will print
+				System.out.println("AmountVerifier attempted to check non-text field element! Cannot verify!");
+				return false;
 			}
 			
-			return false;
+			
+		}
+		
+		private boolean isValidAmount(String amount){
+			Pattern pattern = Pattern.compile("(\\d{0,3},{0,1}\\d{3}.{0,1}\\d{0,2})");
+			Matcher match = pattern.matcher(amount);
+			
+			return match.find();
 		}
 		
 	}
