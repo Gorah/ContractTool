@@ -853,7 +853,11 @@ public class NewHire extends SwingView {
 			}
 		}
 		
-		//finds if tested string contains only allowed chars
+		/**
+		 * finds if tested string contains only allowed chars
+		 * @param text String
+		 * @return boolean
+		 */
 		private Boolean hasNonLetters(String text){
 			if(text.equals(null) || text.isEmpty()){
 				return false;
@@ -903,8 +907,15 @@ public class NewHire extends SwingView {
 			
 		}
 		
+		/**
+		 * This method checks regex to match if string follow currency amount rules (up to 999,999,999.99
+		 * is supported)
+		 * 
+		 * @param amount String amount
+		 * @return boolean 
+		 */
 		private boolean isValidAmount(String amount){
-			Pattern pattern = Pattern.compile("(\\d{0,3},{0,1}\\d{3}.{0,1}\\d{0,2})");
+			Pattern pattern = Pattern.compile("(\\d{0,3},{0,1}\\d{0,3},{0,1}\\d{3}.{0,1}\\d{0,2})");
 			Matcher match = pattern.matcher(amount);
 			
 			return match.find();
