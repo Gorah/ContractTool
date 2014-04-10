@@ -3,6 +3,8 @@ package contract.model;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.NoSuchElementException;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 /**
  * HireAbstractModel is an abstract class used to template new hire data models.
@@ -46,6 +48,39 @@ public abstract class HireAbstractModel {
 		this.hireDetails.put(key, val);
 	}
 
+	
+	/**
+	 * This method extracts salary from the string, using provided regex format.
+	 * 
+	 * @param salary String
+	 * @return String
+	 */
+	protected String getSalary(String salary){
+		Pattern pattern = Pattern.compile("(\\d{0,3},{0,1}\\d{3}.{0,1}\\d{0,2})");
+		Matcher match = pattern.matcher(salary);
+		Boolean found = false;
+		while (match.find()) {
+			salary = match.group();
+			found = true;
+		}
+		
+		if(!found){
+			return "";
+		} else {
+			return salary;
+		}
+	}
+	
+	/**
+	 * This method removes trailing spaces from the end of the string.
+	 * 
+	 * @param text String
+	 * @return String
+	 */
+	protected String filterTrailingSpaces(String text){
+		String result = text.replaceAll("\\s+$", "");
+		return result;
+	}
 
 	/**
 	 * readData method stub.

@@ -5,8 +5,6 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.List;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 import org.apache.poi.openxml4j.exceptions.InvalidFormatException;
 import org.apache.poi.openxml4j.opc.OPCPackage;
@@ -188,27 +186,7 @@ public class DocxHireModel extends HireAbstractModel {
 
 	}
 	
-	private String getSalary(String salary){
-		Pattern pattern = Pattern.compile("(\\d{0,3},{0,1}\\d{3}.{0,1}\\d{0,2})");
-		Matcher match = pattern.matcher(salary);
-		Boolean found = false;
-		while (match.find()) {
-			salary = match.group();
-			found = true;
-		}
-		
-		if(!found){
-			return "";
-		} else {
-			return salary;
-		}
-	}
 	
-	private String filterTrailingSpaces(String text){
-		String result = text.replaceAll("\\s+$", "");
-		return result;
-	}
-
 	@Override
 	public void readDataFromForm() {
 		// TODO Auto-generated method stub
