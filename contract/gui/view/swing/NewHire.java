@@ -24,12 +24,16 @@ import javax.swing.JTabbedPane;
 import javax.swing.JTextField;
 import javax.swing.UIManager;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
 import com.michaelbaranov.microba.calendar.DatePicker;
 
 
 
 public class NewHire extends SwingView {
 	
+	private static final Logger log4j = LogManager.getLogger(NewHire.class.getName());
 	public JLabel refL = new JLabel("Contract Reference");
 	public JTextField ref = new JTextField(10);
 	public JLabel refCredsL = new JLabel("HRBP credentials");
@@ -714,6 +718,10 @@ public class NewHire extends SwingView {
 		
 	}
 	
+	public Logger getLogger(){
+		return log4j;
+	}
+	
 	/**
 	 * This method set all the fields of the form to it's default state. 
 	 * Used to flush the data from the form.
@@ -808,11 +816,22 @@ public class NewHire extends SwingView {
 	 *
 	 */
 	class SubmitEventListener implements ActionListener{
-
+		private boolean checkPassed = true;
+		
 		@Override
 		public void actionPerformed(ActionEvent ev) {
 			if(ev.getSource() == submitBut){
 				if(!pureTextVerifier.verify(name)){
+					checkPassed = false;
+				} 
+				if(!pureTextVerifier.verify(lName)){
+					checkPassed = false;
+				} 
+				if(!pureTextVerifier.verify(city)){
+					checkPassed = false;
+				} 
+			
+				if(!checkPassed){
 					JDialog errDial = new JDialog(mainContainer, "Fields verification failed!", false);
 					JPanel contents = new JPanel();
 					JLabel errDetails = new JLabel("Test error message");
@@ -821,15 +840,7 @@ public class NewHire extends SwingView {
 					errDial.setSize(300, 200);
 					errDial.setLocationRelativeTo(mainContainer);
 					errDial.setVisible(true);
-					
-					System.out.println("failed");
-				} 
-				if(!pureTextVerifier.verify(lName)){
-					System.out.println("failed");
-				} 
-				if(!pureTextVerifier.verify(city)){
-					System.out.println("failed");
-				} 
+				}
 			}
 		}
 		
@@ -859,8 +870,7 @@ public class NewHire extends SwingView {
 					return true;
 				}
 			} catch (ClassCastException e){
-				//error message - to be implemented: error log where it will print
-				System.out.println("NameVerifier attempted to check non-text field element! Cannot verify!");
+				getLogger().error("NameVerifier attempted to check non-text field element (" + input.getName() +")! Cannot verify!");
 				return false;
 			}
 		}
@@ -912,7 +922,7 @@ public class NewHire extends SwingView {
 				}
 			} catch (ClassCastException e){
 				//error message - to be implemented: error log where it will print
-				System.out.println("AmountVerifier attempted to check non-text field element! Cannot verify!");
+				getLogger().error("AmountVerifier attempted to check non-text field element (" + input.getName() +")! Cannot verify!");
 				return false;
 			}
 			
@@ -936,6 +946,17 @@ public class NewHire extends SwingView {
 	}
 	
 	
+	class NumericValueVerifier extends InputVerifier{
 
+		@Override
+		public boolean verify(JComponent arg0) {
+			try{
+				return true;
+			} catch (ClassCastException e){
+				return false;
+			}
+		}
+		
+	}
 
 }
