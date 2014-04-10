@@ -23,7 +23,6 @@ import javax.swing.JPanel;
 import javax.swing.JTabbedPane;
 import javax.swing.JTextField;
 import javax.swing.UIManager;
-
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -141,6 +140,7 @@ public class NewHire extends SwingView {
 	public JButton submitBut = new JButton("Generate Contract");
 	private InputVerifier pureTextVerifier = new NameVerifier();
 	private AmountVerifier amountVerifier = new AmountVerifier();
+	private NumericValueVerifier numVerifier = new NumericValueVerifier();
 
 	
 	public NewHire() {
@@ -160,6 +160,7 @@ public class NewHire extends SwingView {
 		travelSuppAmount.setInputVerifier(amountVerifier);
 		pencePerMile.setInputVerifier(amountVerifier);
 		shiftPayVal.setInputVerifier(amountVerifier);
+		hoursWork.setInputVerifier(numVerifier);
 		
 		//setup of date picker fields
 		//----------------------------
@@ -945,18 +946,51 @@ public class NewHire extends SwingView {
 		
 	}
 	
-	
+	/**
+	 * NumericValueVerifier is a class implementing verifier for fields with numeric value. 
+	 * 
+	 * @author Bartosz Kratochwil (bartosz.krtochwil@hp.com)
+	 * @version 1.0
+	 *
+	 */
 	class NumericValueVerifier extends InputVerifier{
 
+		/**
+		 * Verification method for component - it attempts to cast it to JTextField.
+		 * 
+		 * @param input JComponent input. 
+		 */
 		@Override
-		public boolean verify(JComponent arg0) {
+		public boolean verify(JComponent input) {
 			try{
-				return true;
+				JTextField tField = (JTextField)input;
+				if(checkIfNumeric(tField.getText())){
+					input.setBackground(UIManager.getColor("TextField.background"));
+					return true;
+				} else {
+					input.setBackground(Color.RED);
+					return false;
+				}
 			} catch (ClassCastException e){
 				return false;
 			}
 		}
 		
+		/**
+		 * This method checks regex to match if string contains only digits.
+		 * 
+		 * @param amount String amount
+		 * @return boolean 
+		 */
+		private boolean checkIfNumeric(String val){
+			Pattern pattern = Pattern.compile("^[\\d{0}.{0,1}\\d{0}]+$");
+			Matcher match = pattern.matcher(val);
+			
+			return match.find();
+		}
+		
 	}
+	
+	
 
 }
