@@ -136,14 +136,26 @@ public class NewHire extends SwingView {
 	public JCheckBox compComp = new JCheckBox();
 	public JButton submitBut = new JButton("Generate Contract");
 	private InputVerifier pureTextVerifier = new NameVerifier();
+	private AmountVerifier amountVerifier = new AmountVerifier();
 
 	
 	public NewHire() {
 		super(Name.NEW_HIRE);
 		
+		//add validation to fields
+		
+		//Plain text, only letter chars
 		name.setInputVerifier(pureTextVerifier);
 		lName.setInputVerifier(pureTextVerifier);
 		city.setInputVerifier(pureTextVerifier);
+		
+		//amounts matching specified amount format
+		annPay.setInputVerifier(amountVerifier);
+		reloAmount.setInputVerifier(amountVerifier);
+		signOnAmount.setInputVerifier(amountVerifier);
+		travelSuppAmount.setInputVerifier(amountVerifier);
+		pencePerMile.setInputVerifier(amountVerifier);
+		shiftPayVal.setInputVerifier(amountVerifier);
 		
 		//setup of date picker fields
 		//----------------------------
@@ -922,5 +934,8 @@ public class NewHire extends SwingView {
 		}
 		
 	}
+	
+	
+
 
 }
