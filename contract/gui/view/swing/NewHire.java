@@ -142,6 +142,7 @@ public class NewHire extends SwingView {
 	private InputVerifier pureTextVerifier = new NameVerifier();
 	private AmountVerifier amountVerifier = new AmountVerifier();
 	private NumericValueVerifier numVerifier = new NumericValueVerifier();
+	private EmptyVerifier emptyVerifier = new EmptyVerifier();
 
 	
 	public NewHire() {
@@ -156,6 +157,9 @@ public class NewHire extends SwingView {
 		manager.setInputVerifier(pureTextVerifier);
 		signatoryName.setInputVerifier(pureTextVerifier);
 		reloLocation.setInputVerifier(pureTextVerifier);
+		location.setInputVerifier(pureTextVerifier);
+		bu.setInputVerifier(pureTextVerifier);
+		refCreds.setInputVerifier(pureTextVerifier);
 		
 		
 		//amounts matching specified amount format
@@ -170,6 +174,7 @@ public class NewHire extends SwingView {
 		hoursWork.setInputVerifier(numVerifier);
 		trialDuration.setInputVerifier(numVerifier);
 		travelSuppDur.setInputVerifier(numVerifier);
+		jobN.setInputVerifier(numVerifier);
 		
 		//setup of date picker fields
 		//----------------------------
@@ -882,7 +887,9 @@ public class NewHire extends SwingView {
 			if(!pureTextVerifier.verify(manager)){
 				return false;
 			}
-			
+			if(!pureTextVerifier.verify(refCreds)){
+				return false;
+			}
 			
 			if(!amountVerifier.verify(annPay)){
 				return false;
@@ -932,7 +939,24 @@ public class NewHire extends SwingView {
 					return false;
 				}
 			}
-			
+			if(!emptyVerifier.verify(job)){
+				return false;
+			}
+			if(!emptyVerifier.verify(manPhone)){
+				return false;
+			}
+			if(!emptyVerifier.verify(addressLine1)){
+				return false;
+			}
+			if(!emptyVerifier.verify(addressLine2)){
+				return false;
+			}
+			if(!emptyVerifier.verify(postalCode)){
+				return false;
+			}
+			if(!emptyVerifier.verify(ggs)){
+				return false;
+			}
 			return true;
 		}
 		
