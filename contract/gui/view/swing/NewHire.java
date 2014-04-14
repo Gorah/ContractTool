@@ -23,6 +23,7 @@ import javax.swing.JPanel;
 import javax.swing.JTabbedPane;
 import javax.swing.JTextField;
 import javax.swing.UIManager;
+
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -152,6 +153,10 @@ public class NewHire extends SwingView {
 		name.setInputVerifier(pureTextVerifier);
 		lName.setInputVerifier(pureTextVerifier);
 		city.setInputVerifier(pureTextVerifier);
+		manager.setInputVerifier(pureTextVerifier);
+		signatoryName.setInputVerifier(pureTextVerifier);
+		reloLocation.setInputVerifier(pureTextVerifier);
+		
 		
 		//amounts matching specified amount format
 		annPay.setInputVerifier(amountVerifier);
@@ -160,7 +165,11 @@ public class NewHire extends SwingView {
 		travelSuppAmount.setInputVerifier(amountVerifier);
 		pencePerMile.setInputVerifier(amountVerifier);
 		shiftPayVal.setInputVerifier(amountVerifier);
+		
+		//fields with numeric values only
 		hoursWork.setInputVerifier(numVerifier);
+		trialDuration.setInputVerifier(numVerifier);
+		travelSuppDur.setInputVerifier(numVerifier);
 		
 		//setup of date picker fields
 		//----------------------------
@@ -360,6 +369,9 @@ public class NewHire extends SwingView {
 				if(signatoryReq.isSelected()){
 					signatoryName.setEnabled(true);
 				} else {
+					signatoryName.setText("  ");
+					pureTextVerifier.verify(signatoryName);
+					signatoryName.setText(null);
 					signatoryName.setEnabled(false);
 				}
 			}
@@ -456,10 +468,16 @@ public class NewHire extends SwingView {
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				if(relocation.isSelected()){
+					reloLocation.setText(null);
 					reloLocation.setEnabled(true);
+					reloAmount.setText(null);
 					reloAmount.setEnabled(true);
 				} else {
+					reloLocation.setText("   ");
+					pureTextVerifier.verify(reloLocation);
 					reloLocation.setEnabled(false);
+					reloAmount.setText("   ");
+					amountVerifier.verify(reloAmount);
 					reloAmount.setEnabled(false);
 				}
 			}
@@ -493,8 +511,11 @@ public class NewHire extends SwingView {
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				if(trial.isSelected()){
+					trialDuration.setText(null);
 					trialDuration.setEnabled(true);
 				} else {
+					trialDuration.setText("   ");
+					numVerifier.verify(trialDuration);
 					trialDuration.setEnabled(false);
 				}
 			}
@@ -519,8 +540,11 @@ public class NewHire extends SwingView {
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				if(signOn.isSelected()){
+					signOnAmount.setText(null);
 					signOnAmount.setEnabled(true);
 				} else {
+					signOnAmount.setText("   ");
+					amountVerifier.verify(signOnAmount);
 					signOnAmount.setEnabled(false);
 				}
 			}
@@ -570,10 +594,14 @@ public class NewHire extends SwingView {
 					if(e.getSource() == travelSupp){
 						if(travelSupp.isSelected()){
 							travelSuppAmount.setEnabled(true);
+							travelSuppAmount.setText(null);
 							travelSuppDate.setEnabled(true);
 							travelSuppDur.setEnabled(true);
+							travelSuppDur.setText(null);
 							pencePerMile.setEnabled(true);
+							pencePerMile.setText(null);
 						} else {
+							travelSuppAmount.setText("   ");
 							travelSuppAmount.setEnabled(false);
 							try {
 								travelSuppDate.setDate(null);
@@ -581,7 +609,9 @@ public class NewHire extends SwingView {
 								e1.printStackTrace();
 							}
 							travelSuppDate.setEnabled(false);
+							travelSuppDur.setText("   ");
 							travelSuppDur.setEnabled(false);
+							pencePerMile.setText("   ");
 							pencePerMile.setEnabled(false);
 						}
 					}
@@ -676,8 +706,11 @@ public class NewHire extends SwingView {
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				if(shiftPay.isSelected()){
+					shiftPayVal.setText(null);
 					shiftPayVal.setEnabled(true);
 				} else {
+					shiftPayVal.setText("   ");
+					amountVerifier.verify(shiftPayVal);
 					shiftPayVal.setEnabled(false);
 				}
 				
@@ -817,22 +850,13 @@ public class NewHire extends SwingView {
 	 *
 	 */
 	class SubmitEventListener implements ActionListener{
-		private boolean checkPassed = true;
 		
 		@Override
 		public void actionPerformed(ActionEvent ev) {
-			if(ev.getSource() == submitBut){
-				if(!pureTextVerifier.verify(name)){
-					checkPassed = false;
-				} 
-				if(!pureTextVerifier.verify(lName)){
-					checkPassed = false;
-				} 
-				if(!pureTextVerifier.verify(city)){
-					checkPassed = false;
-				} 
 			
-				if(!checkPassed){
+			if(ev.getSource() == submitBut){
+			
+				if(!verifyForm()){
 					JDialog errDial = new JDialog(mainContainer, "Fields verification failed!", false);
 					JPanel contents = new JPanel();
 					JLabel errDetails = new JLabel("Test error message");
@@ -841,8 +865,75 @@ public class NewHire extends SwingView {
 					errDial.setSize(300, 200);
 					errDial.setLocationRelativeTo(mainContainer);
 					errDial.setVisible(true);
+				}	
+			}
+		}
+		
+		private boolean verifyForm(){
+			if(!pureTextVerifier.verify(name)){
+				return false;
+			} 
+			if(!pureTextVerifier.verify(lName)){
+				return false;
+			} 
+			if(!pureTextVerifier.verify(city)){
+				return false;
+			} 
+			if(!pureTextVerifier.verify(manager)){
+				return false;
+			}
+			
+			
+			if(!amountVerifier.verify(annPay)){
+				return false;
+			}
+			
+			if(!numVerifier.verify(hoursWork)){
+				return false;
+			}
+			
+			//Conditional checks - verification performed only if certain fields are checked
+			if(relocation.isSelected()){
+				if(!amountVerifier.verify(reloAmount)){
+					return false;
+				}
+				if(!pureTextVerifier.verify(reloLocation)){
+					return false;
+				}
+				if(!pureTextVerifier.verify(reloLocation)){
+					return false;
 				}
 			}
+			if(signOn.isSelected()){
+				if(!amountVerifier.verify(signOnAmount)){
+					return false;
+				}
+			}
+			if(travelSupp.isSelected()){
+				if(!amountVerifier.verify(travelSuppAmount)){
+					return false;
+				}
+				if(!amountVerifier.verify(pencePerMile)){
+					return false;
+				}
+			}
+			if(shiftPay.isSelected()){			
+				if(!amountVerifier.verify(shiftPayVal)){
+					return false;
+				}
+			}
+			if(trial.isSelected()){
+				if(!numVerifier.verify(trialDuration)){
+					return false;
+				}
+			}
+			if(signatoryReq.isSelected()){
+				if(!pureTextVerifier.verify(signatoryName)){
+					return false;
+				}
+			}
+			
+			return true;
 		}
 		
 	}
@@ -922,7 +1013,6 @@ public class NewHire extends SwingView {
 					return false;
 				}
 			} catch (ClassCastException e){
-				//error message - to be implemented: error log where it will print
 				getLogger().error("AmountVerifier attempted to check non-text field element (" + input.getName() +")! Cannot verify!");
 				return false;
 			}
@@ -938,7 +1028,10 @@ public class NewHire extends SwingView {
 		 * @return boolean 
 		 */
 		private boolean isValidAmount(String amount){
-			Pattern pattern = Pattern.compile("(\\d{0,3},{0,1}\\d{0,3},{0,1}\\d{3}.{0,1}\\d{0,2})");
+			if (amount.equals("   ")){
+				return true;
+			}
+			Pattern pattern = Pattern.compile("[\\d{0,3},{0,1}\\d{0,3},{0,1}\\d{0,3}.{0,1}\\d{0,2}]+$");
 			Matcher match = pattern.matcher(amount);
 			
 			return match.find();
@@ -972,6 +1065,7 @@ public class NewHire extends SwingView {
 					return false;
 				}
 			} catch (ClassCastException e){
+				getLogger().error("NumericValueVerifier attempted to check non-text field element (" + input.getName() +")! Cannot verify!");
 				return false;
 			}
 		}
@@ -983,6 +1077,9 @@ public class NewHire extends SwingView {
 		 * @return boolean 
 		 */
 		private boolean checkIfNumeric(String val){
+			if(val.equals("   ")){
+				return true;
+			}
 			Pattern pattern = Pattern.compile("^[\\d{0}.{0,1}\\d{0}]+$");
 			Matcher match = pattern.matcher(val);
 			
@@ -992,5 +1089,38 @@ public class NewHire extends SwingView {
 	}
 	
 	
+	/**
+	 * This is class for verifier checking if fields are empty.
+	 * 
+	 * @author Bartosz Kratochwil (bartosz.krtochwil@hp.com)
+	 * @version 1.0
+	 *
+	 */
+	class EmptyVerifier extends InputVerifier{
+
+		/**
+		 * This method checks if field is empty. 
+		 * 
+		 * @param input JComponent
+		 * @return boolean
+		 */
+		@Override
+		public boolean verify(JComponent input) {
+			try{
+				JTextField tField = (JTextField)input;
+				if(tField.getText().isEmpty() || tField.getText() == null){
+					input.setBackground(Color.RED);
+					return false;
+				} else {
+					input.setBackground(UIManager.getColor("TextField.background"));
+					return true;
+				}
+			} catch (ClassCastException e){
+				getLogger().error("EmptyVerifier attempted to check non-text field element (" + input.getName() +")! Cannot verify!");
+				return false;
+			}
+		}
+		
+	}
 
 }
