@@ -874,6 +874,12 @@ public class NewHire extends SwingView {
 			}
 		}
 		
+		/**
+		 * This method checks all the fields on the form using their verifiers to see
+		 * if there aren't any rule violations. 
+		 * 
+		 * @return boolean
+		 */
 		private boolean verifyForm(){
 			if(!pureTextVerifier.verify(name)){
 				return false;
@@ -939,6 +945,8 @@ public class NewHire extends SwingView {
 					return false;
 				}
 			}
+			
+			//Empty fields checks
 			if(!emptyVerifier.verify(job)){
 				return false;
 			}
@@ -1114,7 +1122,8 @@ public class NewHire extends SwingView {
 	
 	
 	/**
-	 * This is class for verifier checking if fields are empty.
+	 * This is class for verifier checking if fields are empty. It's used
+	 * for special case fields where no other verifier rules were applied.
 	 * 
 	 * @author Bartosz Kratochwil (bartosz.krtochwil@hp.com)
 	 * @version 1.0
