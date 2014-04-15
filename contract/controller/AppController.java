@@ -8,6 +8,8 @@ import java.util.Date;
 import java.util.List;
 import java.util.NoSuchElementException;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.apache.poi.openxml4j.exceptions.InvalidFormatException;
 
 import contract.ContractTool;
@@ -28,6 +30,7 @@ import contract.model.DocxHireModel;
 public class AppController {
 	private List<AbstractView> views = new ArrayList<>();
 	private ContractTool contractTool;
+	private static final Logger log4j = LogManager.getLogger(AppController.class.getName());
 	
 	/**
 	 * Only constructor for the class.
@@ -285,6 +288,15 @@ public class AppController {
 			nhForm.shiftPayVal.setEnabled(false);
 			nhForm.shiftPayVal.setText("");
 		}
+	}
+	
+	/**
+	 * Logger getter.
+	 * 
+	 * @return Logger
+	 */
+	public Logger getLogger(){
+		return log4j;
 	}
 	
 	/**

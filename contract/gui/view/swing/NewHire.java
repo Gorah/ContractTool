@@ -33,7 +33,6 @@ import com.michaelbaranov.microba.calendar.DatePicker;
 
 public class NewHire extends SwingView {
 	
-	private static final Logger log4j = LogManager.getLogger(NewHire.class.getName());
 	public JLabel refL = new JLabel("Contract Reference");
 	public JTextField ref = new JTextField(10);
 	public JLabel refCredsL = new JLabel("HRBP credentials");
@@ -756,10 +755,7 @@ public class NewHire extends SwingView {
 		
 		
 	}
-	
-	public Logger getLogger(){
-		return log4j;
-	}
+
 	
 	/**
 	 * This method set all the fields of the form to it's default state. 
@@ -994,7 +990,7 @@ public class NewHire extends SwingView {
 					return true;
 				}
 			} catch (ClassCastException e){
-				getLogger().error("NameVerifier attempted to check non-text field element (" + input.getName() +")! Cannot verify!");
+				appController.getLogger().error("NameVerifier attempted to check non-text field element (" + input.getName() +")! Cannot verify!");
 				return false;
 			}
 		}
@@ -1045,7 +1041,7 @@ public class NewHire extends SwingView {
 					return false;
 				}
 			} catch (ClassCastException e){
-				getLogger().error("AmountVerifier attempted to check non-text field element (" + input.getName() +")! Cannot verify!");
+				appController.getLogger().error("AmountVerifier attempted to check non-text field element (" + input.getName() +")! Cannot verify!");
 				return false;
 			}
 			
@@ -1097,7 +1093,7 @@ public class NewHire extends SwingView {
 					return false;
 				}
 			} catch (ClassCastException e){
-				getLogger().error("NumericValueVerifier attempted to check non-text field element (" + input.getName() +")! Cannot verify!");
+				appController.getLogger().error("NumericValueVerifier attempted to check non-text field element (" + input.getName() +")! Cannot verify!");
 				return false;
 			}
 		}
@@ -1149,7 +1145,7 @@ public class NewHire extends SwingView {
 					return true;
 				}
 			} catch (ClassCastException e){
-				getLogger().error("EmptyVerifier attempted to check non-text field element (" + input.getName() +")! Cannot verify!");
+				appController.getLogger().error("EmptyVerifier attempted to check non-text field element (" + input.getName() +")! Cannot verify!");
 				return false;
 			}
 		}
