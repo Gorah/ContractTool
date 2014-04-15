@@ -36,6 +36,7 @@ public class DocxHireModel extends HireAbstractModel {
 				List<XWPFTableCell> cells = row.getTableCells();
 				
 				//Add model fields, that are not present on the source document
+				addField("ID", "");
 				addField("contract_ref", "");
 				addField("eeid", "");
 				addField("signatory_name_req", "");
@@ -185,13 +186,5 @@ public class DocxHireModel extends HireAbstractModel {
 		}
 
 	}
-	
-	
-	@Override
-	public void readDataFromForm() {
-		// TODO Auto-generated method stub
-		
-	}
-
 }
 ;
