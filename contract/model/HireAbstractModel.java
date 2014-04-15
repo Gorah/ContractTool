@@ -90,6 +90,8 @@ public abstract class HireAbstractModel {
 	/**
 	 * Reads data from form fields and puts them in the model
 	 */
-	public abstract void readDataFromForm();
+	public void readDataFromForm(){
+		//TO IMPLEMENT
+	};
 
 }
