@@ -949,9 +949,6 @@ public class NewHire extends SwingView {
 			if(!emptyVerifier.verify(addressLine1)){
 				return false;
 			}
-			if(!emptyVerifier.verify(addressLine2)){
-				return false;
-			}
 			if(!emptyVerifier.verify(postalCode)){
 				return false;
 			}
