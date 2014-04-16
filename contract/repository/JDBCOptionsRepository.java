@@ -37,10 +37,10 @@ public class JDBCOptionsRepository {
 
 	public JDBCOptionsRepository(DataSource dataSource) throws SQLException {
 		conn = dataSource.getConnection();
-		WORK_CONTRACT_OPTIONS = conn.prepareStatement("SELECT * FROM work_contract");
-		CONTRACT_TYPE_OPTIONS = conn.prepareStatement("SELECT * FROM contract_type");
-		COUNTRY_OPTIONS = conn.prepareStatement("SELECT * FROM countries");
-		COMPANY_CAR_OPTIONS = conn.prepareStatement("SELECT * FROM company_car");
+		WORK_CONTRACT_OPTIONS = conn.prepareStatement("SELECT * FROM work_contract ORDER BY ID ASC");
+		CONTRACT_TYPE_OPTIONS = conn.prepareStatement("SELECT * FROM contract_type ORDER BY ID ASC");
+		COUNTRY_OPTIONS = conn.prepareStatement("SELECT * FROM countries ORDER BY ID ASC");
+		COMPANY_CAR_OPTIONS = conn.prepareStatement("SELECT * FROM company_car ORDER BY ID ASC");
 		setWorkContractItems();
 		setContractTypeItems();
 		setCountryItems();
