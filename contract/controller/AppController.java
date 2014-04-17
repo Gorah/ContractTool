@@ -137,8 +137,8 @@ public class AppController {
 		nhForm.jobN.setText(data.getDetail("position_number"));
 		nhForm.location.setText(data.getDetail("location"));
 		nhForm.bu.setText(data.getDetail("business_area"));
-		//Translate string value to integer index position for Combo Box
 		
+		//Translate string value to integer index position for Combo Box
 		if(data.getDetail("contract_type").equals("Permanent")){
 			nhForm.conType.setSelectedIndex(0);
 		} else {
@@ -149,6 +149,13 @@ public class AppController {
 			nhForm.workContract.setSelectedIndex(0);
 		} else {
 			nhForm.workContract.setSelectedIndex(1);
+		}
+		
+		//Translate employee group into dropdown selection
+		if(data.getDetail("non_negotiated").toLowerCase().equals("non-negotiated")){
+			nhForm.empGroup.setSelectedIndex(0);
+		} else {
+			nhForm.empGroup.setSelectedIndex(1);
 		}
 		nhForm.manager.setText(data.getDetail("lm_name"));
 		nhForm.manPhone.setText(data.getDetail("lm_phone_no"));
