@@ -44,6 +44,7 @@ public class JDBCOptionsRepository {
 		setWorkContractItems();
 		setContractTypeItems();
 		setCountryItems();
+		setCarItems();
 	}
 	
 	
@@ -163,7 +164,6 @@ public class JDBCOptionsRepository {
 			comboItems = new ComboItem[0];
 			logger.log(Level.SEVERE, e.getMessage());
 		} 
-		
 		this.car_options = comboItems;
 	}
 
