@@ -25,9 +25,6 @@ public class ContractLogger {
 		
 		try {
 			File f = new File(System.getProperty("user.dir") +"\\logs\\Error.log");
-//			if(!f.isFile()){
-//				f.createNewFile();
-//			}
 			Handler fileHandler = new FileHandler(f.getPath());
 			fileHandler.setFormatter(new ContractLogFormatter());
 			logger.addHandler(fileHandler);
