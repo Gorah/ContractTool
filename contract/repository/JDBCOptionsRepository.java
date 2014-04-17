@@ -23,7 +23,7 @@ import contract.model.ComboItem;
  *
  */
 
-public class JDBCOptionsRepository {
+public class JDBCOptionsRepository implements ComboOptions {
 	private Connection conn;
 	private PreparedStatement WORK_CONTRACT_OPTIONS;
 	private PreparedStatement CONTRACT_TYPE_OPTIONS;
