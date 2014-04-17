@@ -41,7 +41,10 @@ public class Starter {
 			AppController app = new AppController(tool);
 			app.addViews(new Main(),
 						new OpenContract(),
-						new NewHire());
+						new NewHire(tool.getComboOptions().getCountries(),
+								tool.getComboOptions().getContract_types(),
+								tool.getComboOptions().getWork_contracts(),
+								tool.getComboOptions().getCar_options()));
 			app.init();
 		} catch (SQLException e) {
 			logger.log(Level.SEVERE, "Cannot initialise program. " + e.getMessage());

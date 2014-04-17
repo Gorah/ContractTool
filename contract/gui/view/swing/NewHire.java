@@ -29,6 +29,7 @@ import javax.swing.UIManager;
 import com.michaelbaranov.microba.calendar.DatePicker;
 
 import contract.logging.ContractLogger;
+import contract.model.ComboItem;
 
 
 
@@ -66,8 +67,7 @@ public class NewHire extends SwingView {
 	public JTextField addressLine2 = new JTextField(30);
 	public JTextField city = new JTextField(15);
 	public JTextField postalCode = new JTextField(10);
-	public String[] countries = {"Choose country...","UK", "Scotland", "Ireland"};
-	public JComboBox<String> country = new JComboBox<String>(countries);
+	public JComboBox<String> country = new JComboBox<String>();
 	public JLabel jobL = new JLabel("Position Title");
 	public JTextField job = new JTextField(15);
 	public JLabel jobNL = new JLabel("Position Number");
@@ -79,11 +79,9 @@ public class NewHire extends SwingView {
 	public JLabel buL = new JLabel("Business Area");
 	public JTextField bu = new JTextField(30);
 	public JLabel conTypeL = new JLabel("Contract Type");
-	public String[] conTypes = {"Permanent", "Temporary"};
-	public JComboBox<String> conType = new JComboBox<String>(conTypes);
+	public JComboBox<String> conType = new JComboBox<String>();
 	public JLabel workContractL = new JLabel("Work Contract");
-	public String[] workContractTypes = {"Full Time", "Part Time"};
-	public JComboBox<String> workContract = new JComboBox<String>(workContractTypes);
+	public JComboBox<String> workContract = new JComboBox<String>();
 	public JLabel managerL = new JLabel("Line Manager");
 	public JTextField manager = new JTextField(15);
 	public JLabel manPhoneL = new JLabel("Manager's phone number");
@@ -132,8 +130,7 @@ public class NewHire extends SwingView {
 	public JLabel compCreditCardL = new JLabel("Company Credit Card");
 	public JCheckBox compCreditCard = new JCheckBox();
 	public JLabel compCarL = new JLabel("Company Car:");
-	public String[] carOpts = {"None", "Company Car", "Company Van", "Company Car Cash Allowance"};
-	public JComboBox<String> compCar = new JComboBox<String>(carOpts);
+	public JComboBox<String> compCar = new JComboBox<String>();
 	public JLabel shiftPayL = new JLabel("Shift/Inconvenience Pay");
 	public JCheckBox shiftPay = new JCheckBox();
 	public JLabel shiftPayValL = new JLabel("Shift Pay Value");
@@ -150,8 +147,32 @@ public class NewHire extends SwingView {
 	private EmptyVerifier emptyVerifier = new EmptyVerifier();
 
 	
-	public NewHire() {
+	public NewHire(ComboItem[] countries, ComboItem[] contrType, 
+			ComboItem[] workContr, ComboItem[] companyCar) {
 		super(Name.NEW_HIRE);
+		
+		//Fill combo box with options
+		//---------------------------
+		
+		//Country
+		for(ComboItem item : countries){
+			country.addItem(item.toString());
+		}
+		
+		//Contract Type
+		for(ComboItem item : contrType){
+			conType.addItem(item.toString());
+		}
+		
+		//Work Contract
+		for(ComboItem item : workContr){
+			workContract.addItem(item.toString());
+		}
+		
+		//Company Car
+		for(ComboItem item : companyCar){
+			compCar.addItem(item.toString());
+		}
 		
 		//add validation to fields
 		
