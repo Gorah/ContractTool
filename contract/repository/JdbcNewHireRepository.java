@@ -5,12 +5,12 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.NoSuchElementException;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 import javax.sql.DataSource;
 
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
-
+import contract.logging.ContractLogger;
 import contract.model.HireAbstractModel;
 import contract.model.HireModel;
 
@@ -21,7 +21,7 @@ public class JdbcNewHireRepository implements NewHire {
 	private PreparedStatement SELECT_EMPLOYEE;
 	private PreparedStatement UPDATE_EMPLOYEE;
 	private PreparedStatement FIND_NEWEST_EMPLOYEE;
-	private static final Logger logger = LogManager.getLogger(JdbcNewHireRepository.class.getName());
+	private static final Logger logger = new ContractLogger(JdbcNewHireRepository.class.getName()).getLogger();
 	
 	public JdbcNewHireRepository(DataSource dataSource) throws SQLException{
 		conn = dataSource.getConnection();
@@ -48,7 +48,7 @@ public class JdbcNewHireRepository implements NewHire {
 			}
 			
 		} catch (NumberFormatException | NoSuchElementException | EntityNotFoundException e) {
-			logger.error(e.getMessage());
+			logger.log(Level.SEVERE, e.getMessage());
 			return 0;
 		}
 		
@@ -59,7 +59,7 @@ public class JdbcNewHireRepository implements NewHire {
 			
 			INSERT_EMPLOYEE.executeUpdate();
 		} catch (SQLException e) {
-			logger.error(e.getMessage());
+			logger.log(Level.SEVERE, e.getMessage());
 			return 0;
 		}
 		
@@ -68,7 +68,7 @@ public class JdbcNewHireRepository implements NewHire {
 		try {
 			return getNewestEntryID(hire);
 		} catch (EntityNotFoundException e) {
-			logger.error("Could not find newly added entry in database.");
+			logger.log(Level.SEVERE, "Could not find newly added entry in database.");
 			return 0;
 		}
 	}
@@ -88,7 +88,7 @@ public class JdbcNewHireRepository implements NewHire {
 				throw new EntityNotFoundException();
 			}
 		} catch (SQLException e) {
-			logger.error(e.getMessage());
+			logger.log(Level.SEVERE, e.getMessage());
 		}
 		return null;
 	}
@@ -102,7 +102,7 @@ public class JdbcNewHireRepository implements NewHire {
 				throw new EntityNotFoundException();
 			}
 		} catch (NumberFormatException | NoSuchElementException | EntityNotFoundException e) {
-			logger.error(e.getMessage());
+			logger.log(Level.SEVERE, e.getMessage());
 			return false;
 		}
 		
@@ -111,7 +111,7 @@ public class JdbcNewHireRepository implements NewHire {
 				return false;
 			}
 		} catch (SQLException e) {
-			logger.error(e.getMessage());
+			logger.log(Level.SEVERE, e.getMessage());
 			return false;
 		}
 		
@@ -131,7 +131,7 @@ public class JdbcNewHireRepository implements NewHire {
 				throw new EntityNotFoundException();
 			}
 		} catch (NoSuchElementException | SQLException e) {
-			logger.error(e.getMessage());
+			logger.log(Level.SEVERE, e.getMessage());
 			return 0;
 		}
 	}

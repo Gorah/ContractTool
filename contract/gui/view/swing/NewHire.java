@@ -8,6 +8,8 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.beans.PropertyVetoException;
 import java.text.SimpleDateFormat;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -26,9 +28,13 @@ import javax.swing.UIManager;
 
 import com.michaelbaranov.microba.calendar.DatePicker;
 
+import contract.logging.ContractLogger;
+
 
 
 public class NewHire extends SwingView {
+	
+	private Logger logger = new ContractLogger(NewHire.class.getName()).getLogger();
 	
 	public JLabel refL = new JLabel("Contract Reference");
 	public JTextField ref = new JTextField(10);
@@ -135,6 +141,9 @@ public class NewHire extends SwingView {
 	public JLabel compCompL = new JLabel("Competition Compliance");
 	public JCheckBox compComp = new JCheckBox();
 	public JButton submitBut = new JButton("Generate Contract");
+	private String[] empGroupOpts = {"Non-negotiated", "Negotiated"};
+	public JLabel empGroupL = new JLabel("Employee Group");
+	public JComboBox<String> empGroup = new JComboBox<String>(empGroupOpts);
 	private InputVerifier pureTextVerifier = new NameVerifier();
 	private AmountVerifier amountVerifier = new AmountVerifier();
 	private NumericValueVerifier numVerifier = new NumericValueVerifier();
@@ -344,9 +353,15 @@ public class NewHire extends SwingView {
 		cn.insets = new Insets(2, 2, 2, 2);
 		cn.gridx = 3;
 		posDetails.add(workContract, cn);
-		//Line Manager
+		//Employee Group
 		cn.gridx = 0;
 		cn.gridy = 3;
+		posDetails.add(empGroupL, cn);
+		cn.gridx = 1;
+		posDetails.add(empGroup, cn);
+		//Line Manager
+		cn.gridx = 0;
+		cn.gridy = 4;
 		posDetails.add(managerL, cn);
 		cn.gridx = 1;
 		posDetails.add(manager, cn);
@@ -358,7 +373,7 @@ public class NewHire extends SwingView {
 		cn.gridx = 3;
 		posDetails.add(manPhone, cn);
 		//Signatory name required
-		cn.gridy = 4;
+		cn.gridy = 5;
 		cn.gridx = 0;
 		posDetails.add(signatoryReqL, cn);
 		cn.gridx = 1;
@@ -388,7 +403,7 @@ public class NewHire extends SwingView {
 		signatoryName.setEnabled(false);
 		posDetails.add(signatoryName, cn);
 		//Start Date
-		cn.gridy = 5;
+		cn.gridy = 6;
 		cn.gridx = 0;
 		posDetails.add(effDateL, cn);
 		cn.gridx = 1;
@@ -414,7 +429,7 @@ public class NewHire extends SwingView {
 		posDetails.add(dateTBC, cn);
 		cn.insets = new Insets(2, 2, 2, 2);
 		//Hours Of Work
-		cn.gridy = 6;
+		cn.gridy = 7;
 		cn.gridx = 0;
 		posDetails.add(hoursWorkL, cn);
 		cn.gridx = 1;
@@ -425,7 +440,7 @@ public class NewHire extends SwingView {
 		posDetails.add(isCTS, cn);
 		cn.insets = new Insets(2, 2, 2, 2);
 		//Annual Pay
-		cn.gridy = 7;
+		cn.gridy = 8;
 		cn.gridx = 0;
 		posDetails.add(annPayL, cn);
 		cn.gridx = 1;
@@ -826,6 +841,10 @@ public class NewHire extends SwingView {
 		shiftPayVal.setEnabled(false);
 		compComp.setSelected(false);
 	}
+	
+	private Logger getLogger(){
+		return logger;
+	}
 
 	@Override
 	public void render() {
@@ -836,6 +855,7 @@ public class NewHire extends SwingView {
 
 
 	}
+	
 	
 	/**
 	 * Event listener class for submit button
@@ -984,7 +1004,7 @@ public class NewHire extends SwingView {
 					return true;
 				}
 			} catch (ClassCastException e){
-				appController.getLogger().error("NameVerifier attempted to check non-text field element (" + input.getName() +")! Cannot verify!");
+				getLogger().log(Level.SEVERE, "NameVerifier attempted to check non-text field element (" + input.getName() +")! Cannot verify!");
 				return false;
 			}
 		}
@@ -1035,7 +1055,7 @@ public class NewHire extends SwingView {
 					return false;
 				}
 			} catch (ClassCastException e){
-				appController.getLogger().error("AmountVerifier attempted to check non-text field element (" + input.getName() +")! Cannot verify!");
+				getLogger().log(Level.SEVERE, "AmountVerifier attempted to check non-text field element (" + input.getName() +")! Cannot verify!");
 				return false;
 			}
 			
@@ -1087,7 +1107,7 @@ public class NewHire extends SwingView {
 					return false;
 				}
 			} catch (ClassCastException e){
-				appController.getLogger().error("NumericValueVerifier attempted to check non-text field element (" + input.getName() +")! Cannot verify!");
+				getLogger().log(Level.SEVERE, "NumericValueVerifier attempted to check non-text field element (" + input.getName() +")! Cannot verify!"); 
 				return false;
 			}
 		}
@@ -1139,7 +1159,7 @@ public class NewHire extends SwingView {
 					return true;
 				}
 			} catch (ClassCastException e){
-				appController.getLogger().error("EmptyVerifier attempted to check non-text field element (" + input.getName() +")! Cannot verify!");
+				getLogger().log(Level.SEVERE, "EmptyVerifier attempted to check non-text field element (" + input.getName() +")! Cannot verify!");
 				return false;
 			}
 		}

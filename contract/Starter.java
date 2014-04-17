@@ -28,6 +28,7 @@ public class Starter {
 					new OpenContract(),
 					new NewHire());
 		app.init();
+	
 	}
 
 }

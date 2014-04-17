@@ -5,12 +5,12 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 import javax.sql.DataSource;
 
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
-
+import contract.logging.ContractLogger;
 import contract.model.ComboItem;
 
 /**
@@ -33,7 +33,7 @@ public class JDBCOptionsRepository {
 	private ComboItem[] contract_types;
 	private ComboItem[] countries;
 	private ComboItem[] car_options;
-	private static final Logger logger = LogManager.getLogger(JdbcNewHireRepository.class.getName());
+	private static final Logger logger = new ContractLogger(JdbcNewHireRepository.class.getName()).getLogger();
 
 	public JDBCOptionsRepository(DataSource dataSource) throws SQLException {
 		conn = dataSource.getConnection();
@@ -71,7 +71,7 @@ public class JDBCOptionsRepository {
 		} catch (SQLException e) {
 			//initialise empty array to be returned
 			comboItems = new ComboItem[0];
-			logger.error(e.getMessage());
+			logger.log(Level.SEVERE, e.getMessage());
 		} 
 		
 		this.work_contracts = comboItems;
@@ -101,7 +101,7 @@ public class JDBCOptionsRepository {
 		} catch (SQLException e) {
 			//initialise empty array to be returned
 			comboItems = new ComboItem[0];
-			logger.error(e.getMessage());
+			logger.log(Level.SEVERE, e.getMessage());
 		} 
 		
 		this.contract_types = comboItems;
@@ -131,7 +131,7 @@ public class JDBCOptionsRepository {
 		} catch (SQLException e) {
 			//initialise empty array to be returned
 			comboItems = new ComboItem[0];
-			logger.error(e.getMessage());
+			logger.log(Level.SEVERE, e.getMessage());
 		} 
 		
 		this.countries = comboItems;
@@ -161,7 +161,7 @@ public class JDBCOptionsRepository {
 		} catch (SQLException e) {
 			//initialise empty array to be returned
 			comboItems = new ComboItem[0];
-			logger.error(e.getMessage());
+			logger.log(Level.SEVERE, e.getMessage());
 		} 
 		
 		this.car_options = comboItems;
