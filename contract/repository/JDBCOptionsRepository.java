@@ -29,10 +29,12 @@ public class JDBCOptionsRepository implements ComboOptions {
 	private PreparedStatement CONTRACT_TYPE_OPTIONS;
 	private PreparedStatement COUNTRY_OPTIONS;
 	private PreparedStatement COMPANY_CAR_OPTIONS;
+	private PreparedStatement EE_GROUPS;
 	private ComboItem[] work_contracts;
 	private ComboItem[] contract_types;
 	private ComboItem[] countries;
 	private ComboItem[] car_options;
+	private ComboItem[] ee_groups;
 	private static final Logger logger = new ContractLogger(JdbcNewHireRepository.class.getName()).getLogger();
 
 	public JDBCOptionsRepository(DataSource dataSource) throws SQLException {
@@ -41,10 +43,12 @@ public class JDBCOptionsRepository implements ComboOptions {
 		CONTRACT_TYPE_OPTIONS = conn.prepareStatement("SELECT * FROM contract_type ORDER BY ID ASC");
 		COUNTRY_OPTIONS = conn.prepareStatement("SELECT * FROM countries ORDER BY ID ASC");
 		COMPANY_CAR_OPTIONS = conn.prepareStatement("SELECT * FROM company_car ORDER BY ID ASC");
+		EE_GROUPS = conn.prepareStatement("SELECT * FROM employee_group ORDER BY ID ASC");
 		setWorkContractItems();
 		setContractTypeItems();
 		setCountryItems();
 		setCarItems();
+		setEEGroups();
 	}
 	
 	
@@ -140,7 +144,7 @@ public class JDBCOptionsRepository implements ComboOptions {
 	
 	/**
 	 * This method assigns to a field an array of ComboItem objects built from DB data, representing 
-	 * countries type options.
+	 * company cars type options.
 	 * 
 	 */
 	public void setCarItems(){
@@ -165,6 +169,35 @@ public class JDBCOptionsRepository implements ComboOptions {
 			logger.log(Level.SEVERE, e.getMessage());
 		} 
 		this.car_options = comboItems;
+	}
+	
+	/**
+	 * This method assigns to a field an array of ComboItem objects built from DB data, representing 
+	 * employee group type options.
+	 * 
+	 */
+	public void setEEGroups(){
+		ComboItem[] comboItems;
+		//array list is used as interim solution due to the fact that regular arrays size is immutable
+		ArrayList<ComboItem> itemList = new ArrayList<ComboItem>();
+		
+		try {
+			//Query database and populate array list with values. 
+			ResultSet result = EE_GROUPS.executeQuery();
+			while(result.next()){
+				itemList.add(new ComboItem(result.getInt(1), result.getString(2)));
+			}
+			
+			//Initialise new array with needed size
+			comboItems = new ComboItem[itemList.size()];
+			//convert arraylist object into array
+			comboItems = itemList.toArray(comboItems);
+		} catch (SQLException e) {
+			//initialise empty array to be returned
+			comboItems = new ComboItem[0];
+			logger.log(Level.SEVERE, e.getMessage());
+		} 
+		this.ee_groups = comboItems;
 	}
 
 
@@ -206,6 +239,17 @@ public class JDBCOptionsRepository implements ComboOptions {
 	public ComboItem[] getCar_options() {
 		return car_options;
 	}
+
+	
+	/**
+	 * Getter for employee group options
+	 * 
+	 * @return ComboItem[]
+	 */
+	public ComboItem[] getEe_groups() {
+		return ee_groups;
+	}
+
 
 	@Override
 	public int findID(ComboItem[] items, String name) throws ItemNotFoundException{

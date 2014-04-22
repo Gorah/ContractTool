@@ -14,5 +14,6 @@ public interface ComboOptions {
 	ComboItem[] getContract_types();
 	ComboItem[] getCountries();
 	ComboItem[] getCar_options();
+	ComboItem[] getEe_groups();
 	int findID(ComboItem[] items, String name) throws ItemNotFoundException;
 }
