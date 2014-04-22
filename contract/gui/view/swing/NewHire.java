@@ -138,9 +138,8 @@ public class NewHire extends SwingView {
 	public JLabel compCompL = new JLabel("Competition Compliance");
 	public JCheckBox compComp = new JCheckBox();
 	public JButton submitBut = new JButton("Generate Contract");
-	private String[] empGroupOpts = {"Non-negotiated", "Negotiated"};
 	public JLabel empGroupL = new JLabel("Employee Group");
-	public JComboBox<String> empGroup = new JComboBox<String>(empGroupOpts);
+	public JComboBox<String> empGroup = new JComboBox<String>();
 	private InputVerifier pureTextVerifier = new NameVerifier();
 	private AmountVerifier amountVerifier = new AmountVerifier();
 	private NumericValueVerifier numVerifier = new NumericValueVerifier();
@@ -148,7 +147,7 @@ public class NewHire extends SwingView {
 
 	
 	public NewHire(ComboItem[] countries, ComboItem[] contrType, 
-			ComboItem[] workContr, ComboItem[] companyCar) {
+			ComboItem[] workContr, ComboItem[] companyCar, ComboItem[] empGroups) {
 		super(Name.NEW_HIRE);
 		
 		//Fill combo box with options
@@ -172,6 +171,11 @@ public class NewHire extends SwingView {
 		//Company Car
 		for(ComboItem item : companyCar){
 			compCar.addItem(item.toString());
+		}
+		
+		//Employee Group
+		for(ComboItem item : empGroups){
+			empGroup.addItem(item.toString());
 		}
 		
 		//add validation to fields

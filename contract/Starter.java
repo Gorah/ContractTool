@@ -44,7 +44,8 @@ public class Starter {
 						new NewHire(tool.getComboOptions().getCountries(),
 								tool.getComboOptions().getContract_types(),
 								tool.getComboOptions().getWork_contracts(),
-								tool.getComboOptions().getCar_options()));
+								tool.getComboOptions().getCar_options(),
+								tool.getComboOptions().getEe_groups()));
 			app.init();
 		} catch (SQLException e) {
 			logger.log(Level.SEVERE, "Cannot initialise program. " + e.getMessage());
