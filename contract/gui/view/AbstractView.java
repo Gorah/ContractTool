@@ -18,7 +18,7 @@ public abstract class AbstractView {
 	protected SimpleDateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy");
 	protected AppController appController;
 	protected Name name;
-	protected Map<String, Object> model = new HashMap<>();
+	protected Map<String, String> model = new HashMap<>();
 	
 	/**
 	 * Name is an enum containing all the possible template names for the app.
@@ -40,7 +40,7 @@ public abstract class AbstractView {
 	 * getModel is used to return model.
 	 * @return Map of String view name and model object.
 	 */
-	public Map<String, Object> getModel() {
+	public Map<String, String> getModel() {
 		return model;
 	}
 
@@ -48,7 +48,7 @@ public abstract class AbstractView {
 	 * Sets model for this instance.
 	 * @param model Map containing String view name and the model Object.
 	 */
-	public void setModel(Map<String, Object> model) {
+	public void setModel(Map<String, String> model) {
 		this.model = model;
 	}
 	
