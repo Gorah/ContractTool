@@ -9,4 +9,5 @@ public interface NewHire {
 	HireAbstractModel get(long id) throws EntityNotFoundException;
 	
 	boolean update(HireAbstractModel hire) throws EntityNotFoundException;
+
 }
