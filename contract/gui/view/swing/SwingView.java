@@ -23,5 +23,7 @@ public abstract class SwingView extends AbstractView {
 	public SwingView(Name name) {
 		super(name);
 	}
+	
+	
 
 }

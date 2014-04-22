@@ -68,6 +68,8 @@ public abstract class AbstractView {
 		this.appController = appController;
 	}
 
+	public abstract void extractDataFromModel();
+	
 	/**
 	 * This is rendering method stub.
 	 */

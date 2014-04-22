@@ -241,4 +241,9 @@ public class OpenContract extends SwingView {
 
 	}
 
+	@Override
+	public void extractDataFromModel() {
+		
+	}
+
 }

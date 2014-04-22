@@ -7,7 +7,10 @@ import java.awt.Insets;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.beans.PropertyVetoException;
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.NoSuchElementException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.regex.Matcher;
@@ -37,109 +40,109 @@ public class NewHire extends SwingView {
 	
 	private Logger logger = new ContractLogger(NewHire.class.getName()).getLogger();
 	
-	public JLabel refL = new JLabel("Contract Reference");
-	public JTextField ref = new JTextField(10);
-	public JLabel refCredsL = new JLabel("HRBP credentials");
-	public JTextField refCreds = new JTextField("JB", 5);
-	public JPanel nhPanel = new JPanel();
-	public JPanel contractDetails = new JPanel();
-	public JTabbedPane tabs = new JTabbedPane();
-	public JPanel genInfo = new JPanel();
-	public JPanel eeDetails = new JPanel();
-	public JPanel posDetails = new JPanel();
-	public JPanel addDetails = new JPanel();
-	public JPanel addContractElems = new JPanel();
-	public JPanel benefitsPanel = new JPanel();
-	public JPanel additionalPay = new JPanel();
-	public JTextField conID = new JTextField();
-	public JLabel eeidL = new JLabel("Employee ID");
-	public JTextField eeid = new JTextField(9);
-	public JTextField name = new JTextField(15);
-	public JTextField lName = new JTextField(30);
-	public JLabel nameL = new JLabel("First Name");
-	public JLabel lNameL = new JLabel("Last Name");
-	public JLabel addressLine1Label = new JLabel("Address Line 1:");
-	public JLabel addressLine2Label = new JLabel("Address Line 2:");
-	public JLabel cityLabel = new JLabel("City:");
-	public JLabel postalCodeLabel = new JLabel("Postal Code:");
-	public JLabel countryLabel = new JLabel("Country");
-	public JTextField addressLine1 = new JTextField(30);
-	public JTextField addressLine2 = new JTextField(30);
-	public JTextField city = new JTextField(15);
-	public JTextField postalCode = new JTextField(10);
-	public JComboBox<String> country = new JComboBox<String>();
-	public JLabel jobL = new JLabel("Position Title");
-	public JTextField job = new JTextField(15);
-	public JLabel jobNL = new JLabel("Position Number");
-	public JTextField jobN = new JTextField(15);
-	public JLabel ggsL = new JLabel("GGS:");
-	public JTextField ggs = new JTextField(4);
-	public JLabel locationL = new JLabel("Location");
-	public JTextField location = new JTextField(15);
-	public JLabel buL = new JLabel("Business Area");
-	public JTextField bu = new JTextField(30);
-	public JLabel conTypeL = new JLabel("Contract Type");
-	public JComboBox<String> conType = new JComboBox<String>();
-	public JLabel workContractL = new JLabel("Work Contract");
-	public JComboBox<String> workContract = new JComboBox<String>();
-	public JLabel managerL = new JLabel("Line Manager");
-	public JTextField manager = new JTextField(15);
-	public JLabel manPhoneL = new JLabel("Manager's phone number");
-	public JTextField manPhone = new JTextField(15);
-	public JLabel effDateL = new JLabel("Start date:");
-	public DatePicker effDate = new DatePicker();
-	public JCheckBox dateTBC = new JCheckBox("Date to be confirmed");
-	public JCheckBox isCTS = new JCheckBox("CTS");
-	public JTextField annPay = new JTextField(15);
-	public JLabel annPayL = new JLabel("Annual Pay:");
-	public JTextField shiftVal = new JTextField(15);
-	public JLabel reloAmountL = new JLabel("Relocation Amount");
-	public JTextField reloAmount = new JTextField(15);
-	public JLabel hoursWorkL = new JLabel("Hours of work");
-	public JTextField hoursWork = new JTextField(5);
-	public JLabel relocationL = new JLabel("Relocation");
-	public JCheckBox relocation = new JCheckBox();
-	public JLabel reloLocationL = new JLabel("Relocation location");
-	public JTextField reloLocation = new JTextField(15);
-	public JLabel signatoryReqL = new JLabel("Signatory Name requied");
-	public JCheckBox signatoryReq = new JCheckBox();
-	public JLabel singatoryNameL = new JLabel("Signatory Name");
-	public JTextField signatoryName = new JTextField(15);
-	public JLabel trialL = new JLabel("Trial Period:");
-	public JCheckBox trial = new JCheckBox();
-	public JLabel trialDurationL = new JLabel("Trial Duration");
-	public JTextField trialDuration = new JTextField(5);
-	public JLabel signOnL = new JLabel("Sign-On bonus");
-	public JCheckBox signOn = new JCheckBox();
-	public JLabel signOnAmountL = new JLabel("Sign On bonus Amount");
-	public JTextField signOnAmount = new JTextField(10);
-	public JLabel travelSuppL = new JLabel("Travel Supplement");
-	public JCheckBox travelSupp = new JCheckBox();
-	public JLabel travelSuppAmountL = new JLabel("Travel Supplement Amount");
-	public JTextField travelSuppAmount = new JTextField(10);
-	public JLabel travelSuppDateL = new JLabel("Travel Supplement Start Date");
-	public DatePicker travelSuppDate = new DatePicker();
-	public JLabel travelSuppDurL = new JLabel("Travel Supplement Duration");
-	public JTextField travelSuppDur = new JTextField(5);
-	public JLabel pencePerMileL = new JLabel("Pence per mile");
-	public JTextField pencePerMile = new JTextField(5);
-	public JLabel persQualFeeL = new JLabel("Personal Qualification Fees");
-	public JCheckBox persQualFee = new JCheckBox();
-	public JLabel compMobileL = new JLabel("Company Mobile Phone");
-	public JCheckBox compMobile = new JCheckBox();
-	public JLabel compCreditCardL = new JLabel("Company Credit Card");
-	public JCheckBox compCreditCard = new JCheckBox();
-	public JLabel compCarL = new JLabel("Company Car:");
-	public JComboBox<String> compCar = new JComboBox<String>();
-	public JLabel shiftPayL = new JLabel("Shift/Inconvenience Pay");
-	public JCheckBox shiftPay = new JCheckBox();
-	public JLabel shiftPayValL = new JLabel("Shift Pay Value");
-	public JTextField shiftPayVal = new JTextField(15);
-	public JLabel compCompL = new JLabel("Competition Compliance");
-	public JCheckBox compComp = new JCheckBox();
-	public JButton submitBut = new JButton("Generate Contract");
-	public JLabel empGroupL = new JLabel("Employee Group");
-	public JComboBox<String> empGroup = new JComboBox<String>();
+	private JLabel refL = new JLabel("Contract Reference");
+	private JTextField ref = new JTextField(10);
+	private JLabel refCredsL = new JLabel("HRBP credentials");
+	private JTextField refCreds = new JTextField("JB", 5);
+	private JPanel nhPanel = new JPanel();
+	private JPanel contractDetails = new JPanel();
+	private JTabbedPane tabs = new JTabbedPane();
+	private JPanel genInfo = new JPanel();
+	private JPanel eeDetails = new JPanel();
+	private JPanel posDetails = new JPanel();
+	private JPanel addDetails = new JPanel();
+	private JPanel addContractElems = new JPanel();
+	private JPanel benefitsPanel = new JPanel();
+	private JPanel additionalPay = new JPanel();
+	private JTextField conID = new JTextField();
+	private JLabel eeidL = new JLabel("Employee ID");
+	private JTextField eeid = new JTextField(9);
+	private JTextField name = new JTextField(15);
+	private JTextField lName = new JTextField(30);
+	private JLabel nameL = new JLabel("First Name");
+	private JLabel lNameL = new JLabel("Last Name");
+	private JLabel addressLine1Label = new JLabel("Address Line 1:");
+	private JLabel addressLine2Label = new JLabel("Address Line 2:");
+	private JLabel cityLabel = new JLabel("City:");
+	private JLabel postalCodeLabel = new JLabel("Postal Code:");
+	private JLabel countryLabel = new JLabel("Country");
+	private JTextField addressLine1 = new JTextField(30);
+	private JTextField addressLine2 = new JTextField(30);
+	private JTextField city = new JTextField(15);
+	private JTextField postalCode = new JTextField(10);
+	private JComboBox<String> country = new JComboBox<String>();
+	private JLabel jobL = new JLabel("Position Title");
+	private JTextField job = new JTextField(15);
+	private JLabel jobNL = new JLabel("Position Number");
+	private JTextField jobN = new JTextField(15);
+	private JLabel ggsL = new JLabel("GGS:");
+	private JTextField ggs = new JTextField(4);
+	private JLabel locationL = new JLabel("Location");
+	private JTextField location = new JTextField(15);
+	private JLabel buL = new JLabel("Business Area");
+	private JTextField bu = new JTextField(30);
+	private JLabel conTypeL = new JLabel("Contract Type");
+	private JComboBox<String> conType = new JComboBox<String>();
+	private JLabel workContractL = new JLabel("Work Contract");
+	private JComboBox<String> workContract = new JComboBox<String>();
+	private JLabel managerL = new JLabel("Line Manager");
+	private JTextField manager = new JTextField(15);
+	private JLabel manPhoneL = new JLabel("Manager's phone number");
+	private JTextField manPhone = new JTextField(15);
+	private JLabel effDateL = new JLabel("Start date:");
+	private DatePicker effDate = new DatePicker();
+	private JCheckBox dateTBC = new JCheckBox("Date to be confirmed");
+	private JCheckBox isCTS = new JCheckBox("CTS");
+	private JTextField annPay = new JTextField(15);
+	private JLabel annPayL = new JLabel("Annual Pay:");
+	private JTextField shiftVal = new JTextField(15);
+	private JLabel reloAmountL = new JLabel("Relocation Amount");
+	private JTextField reloAmount = new JTextField(15);
+	private JLabel hoursWorkL = new JLabel("Hours of work");
+	private JTextField hoursWork = new JTextField(5);
+	private JLabel relocationL = new JLabel("Relocation");
+	private JCheckBox relocation = new JCheckBox();
+	private JLabel reloLocationL = new JLabel("Relocation location");
+	private JTextField reloLocation = new JTextField(15);
+	private JLabel signatoryReqL = new JLabel("Signatory Name requied");
+	private JCheckBox signatoryReq = new JCheckBox();
+	private JLabel singatoryNameL = new JLabel("Signatory Name");
+	private JTextField signatoryName = new JTextField(15);
+	private JLabel trialL = new JLabel("Trial Period:");
+	private JCheckBox trial = new JCheckBox();
+	private JLabel trialDurationL = new JLabel("Trial Duration");
+	private JTextField trialDuration = new JTextField(5);
+	private JLabel signOnL = new JLabel("Sign-On bonus");
+	private JCheckBox signOn = new JCheckBox();
+	private JLabel signOnAmountL = new JLabel("Sign On bonus Amount");
+	private JTextField signOnAmount = new JTextField(10);
+	private JLabel travelSuppL = new JLabel("Travel Supplement");
+	private JCheckBox travelSupp = new JCheckBox();
+	private JLabel travelSuppAmountL = new JLabel("Travel Supplement Amount");
+	private JTextField travelSuppAmount = new JTextField(10);
+	private JLabel travelSuppDateL = new JLabel("Travel Supplement Start Date");
+	private DatePicker travelSuppDate = new DatePicker();
+	private JLabel travelSuppDurL = new JLabel("Travel Supplement Duration");
+	private JTextField travelSuppDur = new JTextField(5);
+	private JLabel pencePerMileL = new JLabel("Pence per mile");
+	private JTextField pencePerMile = new JTextField(5);
+	private JLabel persQualFeeL = new JLabel("Personal Qualification Fees");
+	private JCheckBox persQualFee = new JCheckBox();
+	private JLabel compMobileL = new JLabel("Company Mobile Phone");
+	private JCheckBox compMobile = new JCheckBox();
+	private JLabel compCreditCardL = new JLabel("Company Credit Card");
+	private JCheckBox compCreditCard = new JCheckBox();
+	private JLabel compCarL = new JLabel("Company Car:");
+	private JComboBox<String> compCar = new JComboBox<String>();
+	private JLabel shiftPayL = new JLabel("Shift/Inconvenience Pay");
+	private JCheckBox shiftPay = new JCheckBox();
+	private JLabel shiftPayValL = new JLabel("Shift Pay Value");
+	private JTextField shiftPayVal = new JTextField(15);
+	private JLabel compCompL = new JLabel("Competition Compliance");
+	private JCheckBox compComp = new JCheckBox();
+	private JButton submitBut = new JButton("Generate Contract");
+	private JLabel empGroupL = new JLabel("Employee Group");
+	private JComboBox<String> empGroup = new JComboBox<String>();
 	private InputVerifier pureTextVerifier = new NameVerifier();
 	private AmountVerifier amountVerifier = new AmountVerifier();
 	private NumericValueVerifier numVerifier = new NumericValueVerifier();
@@ -871,6 +874,189 @@ public class NewHire extends SwingView {
 		return logger;
 	}
 
+	/**
+	 * This method extracts data from the map provided by the model and puts 
+	 * it into appropriate fields on the form.
+	 */
+	@Override
+	public void extractDataFromModel() {
+		name.setText(model.get("forenames"));
+		lName.setText(model.get("surname"));
+		addressLine1.setText(model.get("address_line1"));
+		addressLine2.setText(model.get("address_line2"));
+		city.setText(model.get("city"));
+		postalCode.setText(model.get("postal_code"));
+		//Translate string value to integer index position for Combo Box
+		int idx = 0;
+		if(model.get("country").equals("UK")){
+			idx = 1;
+		} else if(model.get("country").equals("Scotland")) {
+			idx = 2;
+		} else if(model.get("country").equals("Ireland")){
+			idx = 3;
+		}
+		country.setSelectedIndex(idx);
+		job.setText(model.get("position_title"));
+		jobN.setText(model.get("position_number"));
+		location.setText(model.get("location"));
+		bu.setText(model.get("business_area"));
+		
+		//Translate string value to integer index position for Combo Box
+		if(model.get("contract_type").equals("Permanent")){
+			conType.setSelectedIndex(0);
+		} else {
+			conType.setSelectedIndex(1);
+		}
+		//Translate string value to integer index position for Combo Box
+		if(model.get("work_contract").equals("Full Time")){
+			workContract.setSelectedIndex(0);
+		} else {
+			workContract.setSelectedIndex(1);
+		}
+		
+		//Translate employee group into dropdown selection
+		if(model.get("non_negotiated").toLowerCase().equals("non-negotiated")){
+			empGroup.setSelectedIndex(0);
+		} else {
+			empGroup.setSelectedIndex(1);
+		}
+		manager.setText(model.get("lm_name"));
+		manPhone.setText(model.get("lm_phone_no"));
+		if(Boolean.parseBoolean(model.get("signatory_name_req"))){
+			signatoryReq.setSelected(true);
+		} else {
+			signatoryReq.setSelected(false);
+		}
+		if(!model.get("signatory_name").equals("")){
+			signatoryName.setText(model.get("signatory_name"));
+		}
+		try {
+			Date sDate = new SimpleDateFormat("dd-MM-yyyy").parse(model.get("start_date"));
+			effDate.setDate(sDate);
+			dateTBC.setSelected(false);
+		} catch (NoSuchElementException | PropertyVetoException e) {
+			System.out.println("Date conversion failed");
+			if(model.get("start_date").equals("")){
+				dateTBC.setSelected(true);
+			}
+		} catch (ParseException e1) {
+			System.out.println("date parse error");		
+		}
+		
+		annPay.setText(model.get("salary"));
+		ggs.setText(model.get("job_grade"));
+		//Relocation fields group
+		if(Boolean.parseBoolean(model.get("relocation"))){
+			relocation.setSelected(true);
+			reloAmount.setEnabled(true);
+			reloAmount.setText(model.get("relocation_amount"));
+			reloLocation.setEnabled(true);
+			reloLocation.setText(model.get("relocation_area"));
+		} else {
+			relocation.setSelected(false);
+			reloAmount.setEnabled(false);
+			reloAmount.setText("");
+			reloLocation.setEnabled(false);
+			reloLocation.setText("");
+		}
+		
+		//Probation period fields group
+		if(Boolean.parseBoolean(model.get("probation_period"))){
+			trial.setSelected(true);
+			trialDuration.setEnabled(true);
+			trialDuration.setText(model.get("duration_of_probation"));
+		} else {
+			trial.setSelected(false);
+			trialDuration.setEnabled(false);
+			trialDuration.setText("");
+		}
+		
+		//Sign On Bonus fields group
+		if(Boolean.parseBoolean(model.get("sign_on_bonus"))){
+			signOn.setSelected(true);
+			signOnAmount.setEnabled(true);
+			signOnAmount.setText(model.get("sign_on_bonus_amount"));
+		} else {
+			signOn.setSelected(false);
+			signOnAmount.setEnabled(false);
+			signOnAmount.setText("");
+		}
+		
+		//Competition Compliance
+		if(Boolean.parseBoolean(model.get("competition_compliance"))){
+			compComp.setSelected(true);
+		} else {
+			compComp.setSelected(false);
+		}
+		
+		//Travel Supplement field group
+		if(Boolean.parseBoolean(model.get("travel_supplement"))){
+			travelSupp.setSelected(true);
+			travelSuppAmount.setEnabled(true);
+			travelSuppAmount.setText(model.get("travel_supplement_amount"));
+			travelSuppDate.setEnabled(true);
+			travelSuppDur.setEnabled(true);
+			pencePerMile.setEnabled(true);
+		} else {
+			travelSupp.setSelected(false);
+			travelSuppAmount.setEnabled(false);
+			travelSuppAmount.setText("");
+			travelSuppDate.setEnabled(false);
+			try {
+				travelSuppDate.setDate(null);
+			} catch (PropertyVetoException e) {
+				e.printStackTrace();
+			}
+			travelSuppDur.setEnabled(false);
+			travelSuppDur.setText("");
+			pencePerMile.setEnabled(false);
+			pencePerMile.setText("");
+		}
+		
+		//Company Mobile Phone
+		if(Boolean.parseBoolean(model.get("mobile_phone"))){
+			compMobile.setSelected(true);
+		} else {
+			compMobile.setSelected(false);
+		}
+		
+		//Company Credit Card
+		if(Boolean.parseBoolean(model.get("company_credit_card"))){
+			compCreditCard.setSelected(true);
+		} else {
+			compCreditCard.setSelected(false);
+		}
+		
+		//Company Car
+		String cCar = model.get("company_car");
+		if(cCar.equals("None")){
+			compCar.setSelectedIndex(0);
+		} else if (cCar.equals("Company Car")){
+			compCar.setSelectedIndex(1);
+		} else if (cCar.equals("Company Van")){
+			compCar.setSelectedIndex(2);
+		} else if (cCar.equals("Company Car Cash Allowance")){
+			compCar.setSelectedIndex(3);
+		}
+		
+		if(model.get("addWageType1").toLowerCase().contains("shift") || 
+				model.get("addWageType1").toLowerCase().contains("inconv")){
+			shiftPay.setSelected(true);
+			shiftPayVal.setEnabled(true);
+			shiftPayVal.setText(model.get("addWageTypeAmount1"));
+		} else if (model.get("addWageType2").toLowerCase().contains("shift") || 
+				model.get("addWageType2").toLowerCase().contains("inconv")){
+			shiftPay.setSelected(true);
+			shiftPayVal.setEnabled(true);
+			shiftPayVal.setText(model.get("addWageTypeAmount2"));
+		} else {
+			shiftPay.setSelected(false);
+			shiftPayVal.setEnabled(false);
+			shiftPayVal.setText("");
+		}
+		
+	}
+	
 	@Override
 	public void render() {
 		mainContainer.getContentPane().removeAll();

@@ -167,4 +167,7 @@ public class Main extends SwingView {
 		
 	}
 
+	@Override
+	public void extractDataFromModel() {}
+
 }
