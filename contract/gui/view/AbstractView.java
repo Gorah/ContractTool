@@ -68,7 +68,15 @@ public abstract class AbstractView {
 		this.appController = appController;
 	}
 
+	/**
+	 * Abstract method stub for extracting data from model
+	 */
 	public abstract void extractDataFromModel();
+	
+	/**
+	 * Abstract method stub for saving data to model
+	 */
+	public abstract void saveDataToModel();
 	
 	/**
 	 * This is rendering method stub.

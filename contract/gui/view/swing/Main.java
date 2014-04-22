@@ -170,4 +170,12 @@ public class Main extends SwingView {
 	@Override
 	public void extractDataFromModel() {}
 
+
+
+	@Override
+	public void saveDataToModel() {
+		// TODO Auto-generated method stub
+		
+	}
+
 }

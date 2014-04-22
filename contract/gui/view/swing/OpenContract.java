@@ -246,4 +246,10 @@ public class OpenContract extends SwingView {
 		
 	}
 
+	@Override
+	public void saveDataToModel() {
+		// TODO Auto-generated method stub
+		
+	}
+
 }
