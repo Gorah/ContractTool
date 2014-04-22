@@ -207,6 +207,14 @@ public class JDBCOptionsRepository implements ComboOptions {
 		return car_options;
 	}
 
-	
+	@Override
+	public int findID(ComboItem[] items, String name) throws ItemNotFoundException{
+		for(ComboItem item : items){
+			if(item.toString().equals(name)){
+				return item.getId();
+			}
+		}
+		throw new ItemNotFoundException("Value not found in option list.");
+	}
 	
 }
