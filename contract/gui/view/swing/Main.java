@@ -3,6 +3,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
 import java.io.File;
+
 import javax.swing.JFileChooser;
 import javax.swing.JFrame;
 import javax.swing.JMenu;
@@ -25,7 +26,8 @@ public class Main extends SwingView {
 	private JMenuBar menuBar = new JMenuBar();
 	private JMenu menu = new JMenu();
 	private JMenuItem newContract = new JMenu();
-	private JMenuItem saveData = new JMenuItem();
+	private JMenuItem saveNHData = new JMenuItem();
+	private JMenuItem saveJCData = new JMenuItem();
 	private JMenuItem openContract = new JMenuItem();
 	private JMenuItem exitProg = new JMenuItem();
 	private JMenu edit = new JMenu();
@@ -64,8 +66,10 @@ public class Main extends SwingView {
 		openContract.setText("Open Contract");
 		openContract.setMnemonic(KeyEvent.VK_O);
 		openContract.addActionListener(menuListener);
-		saveData.setText("Save");
-		saveData.addActionListener(menuListener);
+		saveNHData.setText("Save");
+		saveNHData.addActionListener(menuListener);
+		saveJCData.setText("Save");
+		saveJCData.addActionListener(menuListener);
 		exitProg.setText("Exit");
 		exitProg.setMnemonic(KeyEvent.VK_X);
 		exitProg.addActionListener(menuListener);
@@ -74,8 +78,6 @@ public class Main extends SwingView {
 		//Attach menu items to main menu.
 		menu.add(newContract);
 		menu.add(openContract);
-		menu.addSeparator();
-		menu.add(saveData);
 		menu.addSeparator();
 		menu.add(exitProg);
 		
@@ -135,12 +137,20 @@ public class Main extends SwingView {
 				edit.setText("Edit");
 				loadFile.setText("Load File");
 				loadFile.addActionListener(this);
-				edit.add(loadFile);				
+				edit.add(loadFile);
+				menuBar.remove(menu);
+				menu.remove(saveJCData);
+				menu.remove(exitProg);
+				menu.add(saveNHData);
+				menu.addSeparator();
+				menu.add(exitProg);
+				menuBar.add(menu);
 				menuBar.add(edit);
 				mainContainer.setJMenuBar(menuBar);
 				mainContainer.setSize(800, 700);
 				
 			} else if (e.getSource() == loadFile){
+				//trigger for load file menu option
 				//if no file chooser is setup, a new instance is created
 				if(fc == null){
     				fc = new JFileChooser();
@@ -160,8 +170,19 @@ public class Main extends SwingView {
                 } 
                 fc.setSelectedFile(null);
 			} else if (e.getSource() == openContract){
+				//Trigger for open contract menu option
+				menuBar.remove(menu);
+				menu.remove(saveNHData);
+				menu.remove(exitProg);
+				menu.remove(3);
+				menu.add(exitProg);
+				menuBar.add(menu);
+				menuBar.remove(edit);
 				//fires rendering of contract search form.
 				appController.showOpenContract();
+			} else if(e.getSource() == saveNHData){
+				//Trigger for save menu option for new hire
+				appController.saveNewHire();
 			}
 		}
 		

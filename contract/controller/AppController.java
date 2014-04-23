@@ -1,21 +1,14 @@
 package contract.controller;
-import java.beans.PropertyVetoException;
 import java.io.IOException;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
-import java.util.NoSuchElementException;
 
 import org.apache.poi.openxml4j.exceptions.InvalidFormatException;
 
 import contract.ContractTool;
 import contract.gui.view.AbstractView;
 import contract.gui.view.AbstractView.Name;
-import contract.gui.view.swing.NewHire;
 import contract.model.DocxHireModel;
-import contract.model.HireModel;
 
 /**
  * AppController controls the flow of the application. Here views are 
@@ -117,6 +110,13 @@ public class AppController {
 				e.printStackTrace();
 			}
 		}
+	}
+	
+	/**
+	 * This method handles saving new hire data to data source
+	 */
+	public void saveNewHire(){
+		System.out.println("saving new hire");
 	}
 		
 	/**
