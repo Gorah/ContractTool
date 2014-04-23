@@ -33,12 +33,17 @@ import com.michaelbaranov.microba.calendar.DatePicker;
 
 import contract.logging.ContractLogger;
 import contract.model.ComboItem;
+import contract.model.HireModel;
+import contract.repository.ComboOptions;
+import contract.repository.ItemNotFoundException;
 
 
 
 public class NewHire extends SwingView {
 	
 	private Logger logger = new ContractLogger(NewHire.class.getName()).getLogger();
+	
+	private ComboOptions opts;
 	
 	private JLabel refL = new JLabel("Contract Reference");
 	private JTextField ref = new JTextField(10);
@@ -149,35 +154,34 @@ public class NewHire extends SwingView {
 	private EmptyVerifier emptyVerifier = new EmptyVerifier();
 
 	
-	public NewHire(ComboItem[] countries, ComboItem[] contrType, 
-			ComboItem[] workContr, ComboItem[] companyCar, ComboItem[] empGroups) {
+	public NewHire(ComboOptions opts) {
 		super(Name.NEW_HIRE);
-		
+		this.opts = opts;
 		//Fill combo box with options
 		//---------------------------
 		
 		//Country
-		for(ComboItem item : countries){
+		for(ComboItem item : opts.getCountries()){
 			country.addItem(item.toString());
 		}
 		
 		//Contract Type
-		for(ComboItem item : contrType){
+		for(ComboItem item : opts.getContract_types()){
 			conType.addItem(item.toString());
 		}
 		
 		//Work Contract
-		for(ComboItem item : workContr){
+		for(ComboItem item : opts.getWork_contracts()){
 			workContract.addItem(item.toString());
 		}
 		
 		//Company Car
-		for(ComboItem item : companyCar){
+		for(ComboItem item : opts.getCar_options()){
 			compCar.addItem(item.toString());
 		}
 		
 		//Employee Group
-		for(ComboItem item : empGroups){
+		for(ComboItem item : opts.getEe_groups()){
 			empGroup.addItem(item.toString());
 		}
 		
@@ -1094,7 +1098,7 @@ public class NewHire extends SwingView {
 					errDial.setSize(300, 200);
 					errDial.setLocationRelativeTo(mainContainer);
 					errDial.setVisible(true);
-				}	
+				} 
 			}
 		}
 		
@@ -1190,6 +1194,142 @@ public class NewHire extends SwingView {
 		}
 		
 	}
+	
+	/**
+	 * Saves form data to a new model
+	 */
+	@Override
+	public void saveDataToModel() {
+		SimpleDateFormat dateFormat = new SimpleDateFormat("dd-MM-yyyy");
+		
+		HireModel hireModel = new HireModel();
+		hireModel.addField("ID", conID.getText());
+		hireModel.addField("contract_ref", ref.getText());
+		hireModel.addField("eeid", eeid.getText());
+		hireModel.addField("forenames", name.getText());
+		hireModel.addField("surname", lName.getText());
+		hireModel.addField("address_line1", addressLine1.getText());
+		hireModel.addField("address_line2", addressLine2.getText());
+		hireModel.addField("city", city.getText());
+		hireModel.addField("postal_code", postalCode.getText());
+		hireModel.addField("country", country.getSelectedItem().toString());
+		hireModel.addField("position_title", job.getText());
+		hireModel.addField("position_number", jobN.getText());
+		hireModel.addField("job_grade", ggs.getText());
+		hireModel.addField("location", location.getText());
+		hireModel.addField("business_area", bu.getText());
+		hireModel.addField("contract_type", conType.getSelectedItem().toString());
+		hireModel.addField("work_contract", workContract.getSelectedItem().toString());
+		hireModel.addField("non_negotiated", empGroup.getSelectedItem().toString());
+		hireModel.addField("lm_name", manager.getText());
+		hireModel.addField("lm_phone_no", manPhone.getText());
+		hireModel.addField("start_date", dateFormat.format(effDate.getDate()));
+		if(dateTBC.isSelected()){
+			hireModel.addField("date_tbc", "true");
+		} else {
+			hireModel.addField("date_tbc", "false");
+		}
+		if(isCTS.isSelected()){
+			hireModel.addField("cts", "true");
+		} else {
+			hireModel.addField("cts", "false");
+		}
+		hireModel.addField("salary", annPay.getText());
+		if(!shiftPay.isSelected()){
+			hireModel.addField("addWageType1", "shift pay");
+			hireModel.addField("addWageTypeAmount1", shiftVal.getText());
+			hireModel.addField("addWageType2", "");
+			hireModel.addField("addWageTypeAmount2", "");
+		} else {
+			hireModel.addField("addWageType1", "");
+			hireModel.addField("addWageTypeAmount1", "");
+			hireModel.addField("addWageType2", "");
+			hireModel.addField("addWageTypeAmount2", "");
+		}
+		if(relocation.isSelected()){
+			hireModel.addField("relocation", "true");
+			hireModel.addField("relocation_amount", reloAmount.getText());
+			hireModel.addField("relocation_area", reloLocation.getText());
+		} else {
+			hireModel.addField("relocation", "false");
+			hireModel.addField("relocation_amount", "");
+			hireModel.addField("relocation_area", "");
+		}
+		hireModel.addField("hours_of_work", hoursWork.getText());
+		if(signatoryReq.isSelected()){
+			hireModel.addField("signatory_name_req", "true");
+			hireModel.addField("signatory_name", signatoryName.getText());
+		} else {
+			hireModel.addField("signatory_name_req", "false");
+			hireModel.addField("signatory_name", "");
+		}
+		if(trial.isSelected()){
+			hireModel.addField("probation_period", "true");
+			hireModel.addField("duration_of_probation", trialDuration.getText());
+		} else {
+			hireModel.addField("probation_period", "false");
+			hireModel.addField("duration_of_probation", "");
+		}
+		if(signOn.isSelected()){
+			hireModel.addField("sign_on_bonus", "true");
+			hireModel.addField("sign_on_bonus_amount", signOnAmount.getText());
+		} else {
+			hireModel.addField("sign_on_bonus", "false");
+			hireModel.addField("sign_on_bonus_amount", "");
+		}
+		if(travelSupp.isSelected()){
+			hireModel.addField("travel_supplement", "true");
+			hireModel.addField("travel_supplement_amount", travelSuppAmount.getText());
+			hireModel.addField("travel_supplement_start", dateFormat.format(travelSuppDate.getDate()));
+			hireModel.addField("travel_supplement_duration", travelSuppDur.getText());
+			hireModel.addField("pence_per_mile", pencePerMile.getText());
+		} else {
+			hireModel.addField("travel_supplement", "false");
+			hireModel.addField("travel_supplement_amount", "");
+			hireModel.addField("travel_supplement_start", "");
+			hireModel.addField("travel_supplement_duration", "");
+			hireModel.addField("pence_per_mile", "");
+		}
+		if(persQualFee.isSelected()){
+			hireModel.addField("personal_qualification", "true");
+		} else {
+			hireModel.addField("personal_qualification", "false");
+		}
+		if(compMobile.isSelected()){
+			hireModel.addField("mobile_phone", "true");
+		} else {
+			hireModel.addField("mobile_phone", "false");
+		}
+		if(compCreditCard.isSelected()){
+			hireModel.addField("company_credit_card", "true");
+		} else {
+			hireModel.addField("company_credit_card", "false");
+		}
+		try {
+			hireModel.addField("company_car", Integer.toString(opts.findID(opts.getCar_options(), compCar.getSelectedItem().toString())));
+		} catch (ItemNotFoundException e) {
+			hireModel.addField("company_car", "1");
+			logger.log(Level.WARNING, "Couldn't convert combo value for company car. Used 'no car' as default.");
+		}
+		if(compComp.isSelected()){
+			hireModel.addField("competition_compliance", "true");
+		} else {
+			hireModel.addField("competition_compliance", "false");
+		}
+		
+		//Add newly populated model map to form.
+		this.model = hireModel.getHireDetails();
+	}
+	
+	/**
+	 * This methods returns complete hire model.
+	 * 
+	 * @return HireModel
+	 */
+	public HireModel getModelObject(){
+		return new HireModel(this.model);
+	}
+	
 	
 	/**
 	 * Verifier class for pure text fields like name, surname, city etc.

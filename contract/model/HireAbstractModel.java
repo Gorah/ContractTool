@@ -15,6 +15,15 @@ import java.util.regex.Pattern;
 public abstract class HireAbstractModel {
 	private Map<String, String> hireDetails = new HashMap<String, String>();
 	
+	
+	public HireAbstractModel(){
+		super();
+	}
+	
+	
+	public HireAbstractModel(Map<String, String> map){
+		this.hireDetails = map;
+	}
 	/**
 	 * Getter for selected detail by the key from the class.
 	 * Throws exception if key is not found in the hashmap.

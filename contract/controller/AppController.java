@@ -15,6 +15,7 @@ import contract.gui.view.AbstractView;
 import contract.gui.view.AbstractView.Name;
 import contract.gui.view.swing.NewHire;
 import contract.model.DocxHireModel;
+import contract.model.HireModel;
 
 /**
  * AppController controls the flow of the application. Here views are 
@@ -117,7 +118,6 @@ public class AppController {
 			}
 		}
 	}
-	
 		
 	/**
 	 * Method closing app.
