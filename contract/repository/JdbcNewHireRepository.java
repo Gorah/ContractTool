@@ -262,7 +262,6 @@ public class JdbcNewHireRepository implements NewHire {
 			
 			//Execute SQL query
 			INSERT_EMPLOYEE.executeUpdate();
-			System.out.println("po excute");
 			
 			//Find ID of newly added entry
 			ResultSet result = INSERT_EMPLOYEE.getGeneratedKeys();
