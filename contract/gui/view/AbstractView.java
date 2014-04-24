@@ -79,6 +79,11 @@ public abstract class AbstractView {
 	public abstract void saveDataToModel();
 	
 	/**
+	 * Abstract method stub for verifying data on the form
+	 */
+	public abstract boolean verifyForm();
+	
+	/**
 	 * This is rendering method stub.
 	 */
 	public abstract void render();

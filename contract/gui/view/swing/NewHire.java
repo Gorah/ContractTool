@@ -157,6 +157,7 @@ public class NewHire extends SwingView {
 	private AmountVerifier amountVerifier = new AmountVerifier();
 	private NumericValueVerifier numVerifier = new NumericValueVerifier();
 	private EmptyVerifier emptyVerifier = new EmptyVerifier();
+	private SubmitEventListener subListener = new SubmitEventListener();
 
 	
 	public NewHire(ComboOptions opts) {
@@ -815,12 +816,22 @@ public class NewHire extends SwingView {
 		cn.fill = GridBagConstraints.NONE;
 		cn.anchor = GridBagConstraints.CENTER;
 		nhPanel.add(submitBut, cn);
-		submitBut.addActionListener(new SubmitEventListener());
+		submitBut.addActionListener(subListener);
 		
 		
 	}
-
 	
+	
+	/**
+	 * SubmitEventListener getter.
+	 * 
+	 * @return SubmitEventListener
+	 */
+	public SubmitEventListener getSubListener() {
+		return subListener;
+	}
+
+
 	/**
 	 * This method set all the fields of the form to it's default state. 
 	 * Used to flush the data from the form.
@@ -1569,6 +1580,12 @@ public class NewHire extends SwingView {
 			}
 		}
 		
+	}
+
+	
+	@Override
+	public boolean verifyForm() {
+		return subListener.verifyForm();
 	}
 
 }

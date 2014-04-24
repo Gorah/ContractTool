@@ -252,4 +252,9 @@ public class OpenContract extends SwingView {
 		
 	}
 
+	@Override
+	public boolean verifyForm() {
+		return true;
+	}
+
 }

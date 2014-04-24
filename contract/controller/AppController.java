@@ -123,11 +123,13 @@ public class AppController {
 	 * This method handles saving new hire data to data source
 	 */
 	public void saveNewHire(){
-		try {
-			getView(Name.NEW_HIRE).saveDataToModel();
-			this.contractTool.getNewHireRepository().add(new HireModel(getView(Name.NEW_HIRE).getModel()));
-		} catch (EntityAlreadyExistsException e) {
-			logger.log(Level.WARNING, "Couldn't save hire - entity already exists in DB.");
+		if(getView(Name.NEW_HIRE).verifyForm()){
+			try {
+				getView(Name.NEW_HIRE).saveDataToModel();
+				this.contractTool.getNewHireRepository().add(new HireModel(getView(Name.NEW_HIRE).getModel()));
+			} catch (EntityAlreadyExistsException e) {
+				logger.log(Level.WARNING, "Couldn't save hire - entity already exists in DB.");
+			}
 		}
 	}
 		
