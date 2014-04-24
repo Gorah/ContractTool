@@ -2,13 +2,18 @@ package contract.controller;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 import org.apache.poi.openxml4j.exceptions.InvalidFormatException;
 
 import contract.ContractTool;
 import contract.gui.view.AbstractView;
 import contract.gui.view.AbstractView.Name;
+import contract.logging.ContractLogger;
 import contract.model.DocxHireModel;
+import contract.model.HireModel;
+import contract.repository.EntityAlreadyExistsException;
 
 /**
  * AppController controls the flow of the application. Here views are 
@@ -20,6 +25,8 @@ import contract.model.DocxHireModel;
  * @version 1.0
  */
 public class AppController {
+	private Logger logger = new ContractLogger(AppController.class.getName()).getLogger();
+	
 	private List<AbstractView> views = new ArrayList<>();
 	private ContractTool contractTool;
 	
@@ -116,7 +123,12 @@ public class AppController {
 	 * This method handles saving new hire data to data source
 	 */
 	public void saveNewHire(){
-		System.out.println("saving new hire");
+		try {
+			getView(Name.NEW_HIRE).saveDataToModel();
+			this.contractTool.getNewHireRepository().add(new HireModel(getView(Name.NEW_HIRE).getModel()));
+		} catch (EntityAlreadyExistsException e) {
+			logger.log(Level.WARNING, "Couldn't save hire - entity already exists in DB.");
+		}
 	}
 		
 	/**

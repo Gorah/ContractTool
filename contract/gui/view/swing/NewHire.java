@@ -9,6 +9,7 @@ import java.awt.event.ActionListener;
 import java.beans.PropertyVetoException;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.NoSuchElementException;
 import java.util.logging.Level;
@@ -150,6 +151,8 @@ public class NewHire extends SwingView {
 	private JComboBox<String> empGroup = new JComboBox<String>();
 	private JLabel profSubsL = new JLabel("Professional Subscriptions");
 	private JCheckBox profSubs = new JCheckBox();
+	private JLabel workVisaL = new JLabel("Working Visa Required");
+	private JCheckBox workVisa = new JCheckBox();
 	private InputVerifier pureTextVerifier = new NameVerifier();
 	private AmountVerifier amountVerifier = new AmountVerifier();
 	private NumericValueVerifier numVerifier = new NumericValueVerifier();
@@ -609,11 +612,18 @@ public class NewHire extends SwingView {
 		cn.insets = new Insets(2, 2, 2, 2);
 		cn.gridx = 3;
 		addContractElems.add(signOnAmount, cn);
+		//Competition Compliance
 		cn.gridy = 4;
 		cn.gridx = 0;
 		addContractElems.add(compCompL, cn);
 		cn.gridx = 1;
 		addContractElems.add(compComp, cn);
+		//Working Visa
+		cn.gridy = 5;
+		cn.gridx = 0;
+		addContractElems.add(workVisaL, cn);
+		cn.gridx = 1;
+		addContractElems.add(workVisa, cn);
 		
 		//Add Additional Contract Elements Panel to tab
 		cn.gridx = 0;
@@ -1004,6 +1014,13 @@ public class NewHire extends SwingView {
 			compComp.setSelected(false);
 		}
 		
+		//Working Visa
+		if(Boolean.parseBoolean(model.get("working_visa_paragraph"))){
+			workVisa.setSelected(true);
+		} else {
+			workVisa.setSelected(false);
+		}
+		
 		//Travel Supplement field group
 		if(Boolean.parseBoolean(model.get("travel_supplement"))){
 			travelSupp.setSelected(true);
@@ -1342,6 +1359,18 @@ public class NewHire extends SwingView {
 			hireModel.addField("competition_compliance", "false");
 		}
 		
+		if(workVisa.isSelected()){
+			hireModel.addField("working_visa_paragraph", "true");
+		} else {
+			hireModel.addField("working_visa_paragraph", "false");
+		}
+		
+		hireModel.addField("mcbc_sharps", "");
+		Calendar cal = Calendar.getInstance();
+		cal.setTime(effDate.getDate());
+		cal.add(Calendar.YEAR, 1);
+		hireModel.addField("next_salary_review", ""+cal.get(Calendar.YEAR) + "-04-01");
+		hireModel.addField("reason_for_contract", "");
 		//Add newly populated model map to form.
 		this.model = hireModel.getHireDetails();
 	}

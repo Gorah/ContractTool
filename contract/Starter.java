@@ -16,6 +16,7 @@ import contract.gui.view.swing.OpenContract;
 import contract.logging.ContractLogger;
 import contract.model.Settings;
 import contract.repository.JDBCOptionsRepository;
+import contract.repository.JdbcNewHireRepository;
 
 public class Starter {
 
@@ -37,7 +38,8 @@ public class Starter {
 		
 		ContractTool tool;
 		try {
-			tool = new ContractTool(new JDBCOptionsRepository(dataSource));
+			tool = new ContractTool(new JDBCOptionsRepository(dataSource), 
+					new JdbcNewHireRepository(dataSource));
 			AppController app = new AppController(tool);
 			app.addViews(new Main(),
 						new OpenContract(),
