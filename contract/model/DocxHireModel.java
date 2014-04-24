@@ -157,7 +157,7 @@ public class DocxHireModel extends HireAbstractModel {
 							break;
 					case 33: 
 							//Find if there are professional subscriptions
-							if(filterTrailingSpaces(cells.get(1).getText()).equals("Yes")){
+							if(filterTrailingSpaces(cells.get(3).getText()).equals("Yes")){
 								addField("professional_subs", "true");
 							} else {
 								addField("professional_subs", "false");

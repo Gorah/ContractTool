@@ -148,6 +148,8 @@ public class NewHire extends SwingView {
 	private JButton submitBut = new JButton("Generate Contract");
 	private JLabel empGroupL = new JLabel("Employee Group");
 	private JComboBox<String> empGroup = new JComboBox<String>();
+	private JLabel profSubsL = new JLabel("Professional Subscriptions");
+	private JCheckBox profSubs = new JCheckBox();
 	private InputVerifier pureTextVerifier = new NameVerifier();
 	private AmountVerifier amountVerifier = new AmountVerifier();
 	private NumericValueVerifier numVerifier = new NumericValueVerifier();
@@ -706,8 +708,16 @@ public class NewHire extends SwingView {
 		cn.anchor = GridBagConstraints.CENTER;
 		benefitsPanel.add(persQualFee, cn);
 		cn.anchor = GridBagConstraints.WEST;
-		//Company Mobile
+		//Professional Subscriptions
 		cn.gridy = 6;
+		cn.gridx = 0;
+		benefitsPanel.add(profSubsL, cn);
+		cn.gridx = 1;
+		cn.anchor = GridBagConstraints.CENTER;
+		benefitsPanel.add(profSubs, cn);
+		cn.anchor = GridBagConstraints.WEST;
+		//Company Mobile
+		cn.gridy = 7;
 		cn.gridx = 0;
 		benefitsPanel.add(compMobileL, cn);
 		cn.gridx = 1;
@@ -715,7 +725,7 @@ public class NewHire extends SwingView {
 		benefitsPanel.add(compMobile, cn);
 		cn.anchor = GridBagConstraints.WEST;
 		//Company Credit Card
-		cn.gridy = 7;
+		cn.gridy = 8;
 		cn.gridx = 0;
 		benefitsPanel.add(compCreditCardL, cn);
 		cn.gridx = 1;
@@ -723,7 +733,7 @@ public class NewHire extends SwingView {
 		benefitsPanel.add(compCreditCard, cn);
 		cn.anchor = GridBagConstraints.WEST;
 		//Company Car
-		cn.gridy = 8;
+		cn.gridy = 9;
 		cn.gridx = 0;
 		benefitsPanel.add(compCarL, cn);
 		cn.gridx = 1;
@@ -865,6 +875,7 @@ public class NewHire extends SwingView {
 		pencePerMile.setText("");
 		pencePerMile.setEnabled(false);
 		persQualFee.setSelected(false);
+		profSubs.setSelected(false);
 		compMobile.setSelected(false);
 		compCreditCard.setSelected(false);
 		compCar.setSelectedIndex(0);
@@ -1031,6 +1042,13 @@ public class NewHire extends SwingView {
 			compCreditCard.setSelected(false);
 		}
 		
+		//Professional Subscriptions
+		if(Boolean.parseBoolean(model.get("professional_subs"))){
+			profSubs.setSelected(true);
+		} else {
+			profSubs.setSelected(false);
+		}
+		
 		//Company Car
 		String cCar = model.get("company_car");
 		if(cCar.equals("None")){
@@ -1057,8 +1075,7 @@ public class NewHire extends SwingView {
 			shiftPay.setSelected(false);
 			shiftPayVal.setEnabled(false);
 			shiftPayVal.setText("");
-		}
-		
+		}		
 	}
 	
 	@Override
@@ -1086,9 +1103,7 @@ public class NewHire extends SwingView {
 		
 		@Override
 		public void actionPerformed(ActionEvent ev) {
-			
 			if(ev.getSource() == submitBut){
-			
 				if(!verifyForm()){
 					JDialog errDial = new JDialog(mainContainer, "Fields verification failed!", false);
 					JPanel contents = new JPanel();
@@ -1099,6 +1114,8 @@ public class NewHire extends SwingView {
 					errDial.setLocationRelativeTo(mainContainer);
 					errDial.setVisible(true);
 				} 
+				System.out.println("hours of work:");
+				System.out.println(hoursWork.getText());
 			}
 		}
 		
@@ -1224,6 +1241,8 @@ public class NewHire extends SwingView {
 		hireModel.addField("lm_name", manager.getText());
 		hireModel.addField("lm_phone_no", manPhone.getText());
 		hireModel.addField("start_date", dateFormat.format(effDate.getDate()));
+		hireModel.addField("end_date", "");
+		hireModel.addField("hours_of_work", hoursWork.getText());
 		if(dateTBC.isSelected()){
 			hireModel.addField("date_tbc", "true");
 		} else {
@@ -1295,6 +1314,12 @@ public class NewHire extends SwingView {
 		} else {
 			hireModel.addField("personal_qualification", "false");
 		}
+		if(profSubs.isSelected()){
+			hireModel.addField("professional_subs", "true");
+		} else {
+			hireModel.addField("professional_subs", "false");
+		}
+		
 		if(compMobile.isSelected()){
 			hireModel.addField("mobile_phone", "true");
 		} else {
