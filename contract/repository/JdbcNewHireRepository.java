@@ -7,12 +7,15 @@ import java.sql.SQLException;
 import java.sql.Types;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import javax.sql.DataSource;
 
+import contract.gui.view.swing.table.HireEntry;
 import contract.logging.ContractLogger;
 import contract.model.HireAbstractModel;
 import contract.model.HireModel;
@@ -24,6 +27,7 @@ public class JdbcNewHireRepository implements NewHire {
 	private PreparedStatement INSERT_EMPLOYEE;
 	private PreparedStatement SELECT_EMPLOYEE;
 	private PreparedStatement UPDATE_EMPLOYEE;
+	private PreparedStatement LIST_NEW_HIRES;
 	private static final Logger logger = new ContractLogger(JdbcNewHireRepository.class.getName()).getLogger();
 	
 	public JdbcNewHireRepository(DataSource dataSource) throws SQLException{
@@ -45,6 +49,8 @@ public class JdbcNewHireRepository implements NewHire {
 				+"relocation_area = ?, personal_qualification = ?, mobile_phone = ?, professional_subs = ?, "
 				+"company_car = ?, sharps = ?, next_salary_review = ?, employee_group = ?, reason_for_contract = ?, "
 				+"location = ?, working_visa = ? WHERE ID = ?");
+		LIST_NEW_HIRES = conn.prepareStatement("SELECT ID, contract_ref, eeid, surname, forename, position_title, "
+				+"contract_start_date FROM Hires");
 	}
 
 	
@@ -621,6 +627,32 @@ public class JdbcNewHireRepository implements NewHire {
 		}
 		
 		return true;
+	}
+	
+	/**
+	 * This method return array of new hire entries for table model.
+	 * 
+	 * @return HireEntry[] list of entries
+	 */
+	@Override
+	public List<HireEntry> list(){
+		try {
+			ResultSet result = LIST_NEW_HIRES.executeQuery();
+			List<HireEntry> entries = new ArrayList<HireEntry>();
+			while(result.next()){
+				entries.add(new HireEntry(result.getInt("ID"),
+							result.getString("contract_ref"),
+							result.getInt("eeid"),
+							result.getString("surname"),
+							result.getString("forename"),
+							result.getString("position_title"),
+							result.getDate("contract_start_date")));
+			}
+			return entries;
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+		return null;
 	}
 
 }

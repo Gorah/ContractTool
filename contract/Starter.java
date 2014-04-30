@@ -13,6 +13,7 @@ import contract.controller.AppController;
 import contract.gui.view.swing.Main;
 import contract.gui.view.swing.NewHire;
 import contract.gui.view.swing.OpenContract;
+import contract.gui.view.swing.table.NewHireTableModel;
 import contract.logging.ContractLogger;
 import contract.model.Settings;
 import contract.repository.JDBCOptionsRepository;
@@ -38,11 +39,12 @@ public class Starter {
 		
 		ContractTool tool;
 		try {
+			contract.repository.NewHire nhRepo = new JdbcNewHireRepository(dataSource);
 			tool = new ContractTool(new JDBCOptionsRepository(dataSource), 
-					new JdbcNewHireRepository(dataSource));
+					nhRepo);
 			AppController app = new AppController(tool);
 			app.addViews(new Main(),
-						new OpenContract(),
+						new OpenContract(new NewHireTableModel(nhRepo.list())),
 						new NewHire(tool.getComboOptions()));
 			app.init();
 		} catch (SQLException e) {

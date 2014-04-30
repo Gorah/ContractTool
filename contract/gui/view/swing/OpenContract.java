@@ -10,13 +10,14 @@ import java.awt.event.ActionListener;
 import javax.swing.JButton;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
+import javax.swing.JTable;
 import javax.swing.JTextField;
 import javax.swing.RowFilter;
 import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
-import javax.swing.table.DefaultTableModel;
+import javax.swing.table.TableRowSorter;
 
-import cotract.gui.test.DataTable;
+import contract.gui.view.swing.table.NewHireTableModel;
 
 /**
  * OpenContract class is used to create Open Contract form view.
@@ -43,15 +44,21 @@ public class OpenContract extends SwingView {
 	private JLabel filterLabel = new JLabel("Filter Text:");
 	private JTextField filterText = new JTextField();
 	
-	private DataTable res;
+	
+	private NewHireTableModel entryData;
+	private JTable tab; 
+	private TableRowSorter<NewHireTableModel> sorter; 
 	
 	/**
 	 * Only constructor for the class.
 	 */
-	public OpenContract() {
+	public OpenContract(NewHireTableModel data) {
 		//run parent constructor and register view under correct enum value
 		super(Name.OPEN_CONTRACT);
+		this.entryData = data;
 		
+		tab = new JTable(entryData);
+		sorter = new TableRowSorter<NewHireTableModel>(entryData);
 		//hide filter box and label
 		filterLabel.setVisible(false);
 		filterText.setVisible(false);
@@ -143,9 +150,11 @@ public class OpenContract extends SwingView {
 		contents.add(searchConditions);
 		
 		//create table with result set and add it to main container
-		res = new DataTable();
-		contents.add(res);
-
+		
+		tab.setRowSorter(sorter);
+		//res = new DataTable();
+		contents.add(tab);
+		
 	}
 
 	/**
@@ -192,7 +201,7 @@ public class OpenContract extends SwingView {
 	 * pattern source.
 	 */
 	public void resultFilter(){
-		RowFilter<DefaultTableModel, Object> rf = null;
+		RowFilter<NewHireTableModel, Object> rf = null;
         //If current expression doesn't parse, don't update.
         try {
             rf = RowFilter.regexFilter(filterText.getText());
@@ -200,7 +209,7 @@ public class OpenContract extends SwingView {
             return;
         }
         //sets filter to the table
-        res.sorter.setRowFilter(rf);
+        sorter.setRowFilter(rf);
     }
 	
 	/**

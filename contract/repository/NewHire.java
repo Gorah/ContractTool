@@ -1,5 +1,8 @@
 package contract.repository;
 
+import java.util.List;
+
+import contract.gui.view.swing.table.HireEntry;
 import contract.model.HireAbstractModel;
 
 public interface NewHire {
@@ -12,4 +15,5 @@ public interface NewHire {
 	
 	void setOpts(ComboOptions opts);
 
+	public List<HireEntry> list();
 }
