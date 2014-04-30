@@ -1144,8 +1144,6 @@ public class NewHire extends SwingView {
 					errDial.setLocationRelativeTo(mainContainer);
 					errDial.setVisible(true);
 				} 
-				System.out.println("hours of work:");
-				System.out.println(hoursWork.getText());
 			}
 		}
 		
@@ -1284,7 +1282,6 @@ public class NewHire extends SwingView {
 			hireModel.addField("cts", "false");
 		}
 		hireModel.addField("salary", annPay.getText());
-		System.out.println(shiftPay.isSelected());
 		if(shiftPay.isSelected()){
 			hireModel.addField("addWageType1", "shift pay");
 			hireModel.addField("addWageTypeAmount1", shiftPayVal.getText());
