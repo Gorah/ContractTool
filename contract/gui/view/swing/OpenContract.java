@@ -1,5 +1,6 @@
 package contract.gui.view.swing;
 import java.awt.BorderLayout;
+import java.awt.Dimension;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.GridLayout;
@@ -10,8 +11,10 @@ import java.awt.event.ActionListener;
 import javax.swing.JButton;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
+import javax.swing.JScrollPane;
 import javax.swing.JTable;
 import javax.swing.JTextField;
+import javax.swing.ListSelectionModel;
 import javax.swing.RowFilter;
 import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
@@ -43,11 +46,10 @@ public class OpenContract extends SwingView {
 	private JPanel interLine = new JPanel();
 	private JLabel filterLabel = new JLabel("Filter Text:");
 	private JTextField filterText = new JTextField();
-	
-	
 	private NewHireTableModel entryData;
 	private JTable tab; 
-	private TableRowSorter<NewHireTableModel> sorter; 
+	private TableRowSorter<NewHireTableModel> sorter;
+	private JScrollPane scrollPane;
 	
 	/**
 	 * Only constructor for the class.
@@ -59,9 +61,14 @@ public class OpenContract extends SwingView {
 		
 		tab = new JTable(entryData);
 		sorter = new TableRowSorter<NewHireTableModel>(entryData);
+		tab.setPreferredScrollableViewportSize(new Dimension(500, 70));
+		tab.setFillsViewportHeight(true);
+		tab.setRowSorter(sorter);
+		tab.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
 		//hide filter box and label
 		filterLabel.setVisible(false);
 		filterText.setVisible(false);
+		scrollPane  = new JScrollPane(tab);
 		
 		//set grid layout for container panel
 		contents.setLayout(gLayout);
@@ -151,10 +158,9 @@ public class OpenContract extends SwingView {
 		
 		//create table with result set and add it to main container
 		
-		tab.setRowSorter(sorter);
-		//res = new DataTable();
-		contents.add(tab);
 		
+		//res = new DataTable();
+		contents.add(scrollPane);
 	}
 
 	/**

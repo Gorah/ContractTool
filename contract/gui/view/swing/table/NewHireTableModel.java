@@ -31,6 +31,11 @@ public class NewHireTableModel extends AbstractTableModel{
 	public int getRowCount() {
 		return hires.size();
 	}
+	
+	@Override
+	public String getColumnName(int column) {
+		return columns[column];
+	}
 
 	@Override
 	public Object getValueAt(int row, int col) {
