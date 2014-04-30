@@ -31,7 +31,7 @@ public class JdbcNewHireRepository implements NewHire {
 		INSERT_EMPLOYEE = conn.prepareStatement("INSERT INTO Hires VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, "
 				+"?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, "
 				+"?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)", PreparedStatement.RETURN_GENERATED_KEYS);
-		SELECT_EMPLOYEE = conn.prepareStatement("SELECT * FROM Hires WHERE ContractID = ?");
+		SELECT_EMPLOYEE = conn.prepareStatement("SELECT * FROM Hires WHERE ID = ?");
 		UPDATE_EMPLOYEE = conn.prepareStatement("UPDATE Hires SET WHERE ID = ?");
 	}
 
@@ -63,9 +63,11 @@ public class JdbcNewHireRepository implements NewHire {
 				throw new EntityAlreadyExistsException();
 			}
 			
-		} catch (NumberFormatException | NoSuchElementException | EntityNotFoundException e) {
+		} catch (NumberFormatException | NoSuchElementException e) {
+			e.printStackTrace();
 			logger.log(Level.SEVERE, e.getMessage());
 			return 0;
+		} catch (EntityNotFoundException e1){
 		}
 		
 		try {
@@ -161,9 +163,9 @@ public class JdbcNewHireRepository implements NewHire {
 			} else {
 				INSERT_EMPLOYEE.setNull(27, Types.DATE);
 			}
-			if(!hire.getDetail("end_date").isEmpty()){
+			if(!hire.getDetail("contract_end_date").isEmpty()){
 				try {
-					INSERT_EMPLOYEE.setString(28, new java.sql.Date(new SimpleDateFormat("dd-MM-yyyy").parse(hire.getDetail("end_date")).getTime()).toString());
+					INSERT_EMPLOYEE.setString(28, new java.sql.Date(new SimpleDateFormat("dd-MM-yyyy").parse(hire.getDetail("contract_end_date")).getTime()).toString());
 				} catch (NoSuchElementException | ParseException e) {
 					INSERT_EMPLOYEE.setNull(28, Types.DATE);
 					logger.log(Level.WARNING, "Could not convert end date string to date.");
@@ -239,13 +241,8 @@ public class JdbcNewHireRepository implements NewHire {
 				INSERT_EMPLOYEE.setNull(48, Types.VARCHAR);
 			}
 			
-			try {
-				INSERT_EMPLOYEE.setString(49, new java.sql.Date(new SimpleDateFormat("dd-MM-yyyy").parse(
-						hire.getDetail("next_salary_review")).getTime()).toString());
-			} catch (NoSuchElementException | ParseException e) {
-				logger.log(Level.SEVERE, "Couldn't parse Next Slary Review date.");
-				return 0;
-			}
+			INSERT_EMPLOYEE.setString(49, hire.getDetail("next_salary_review"));
+			
 			try {
 				INSERT_EMPLOYEE.setInt(50, opts.findID(opts.getEe_groups(), hire.getDetail("non_negotiated")));
 			} catch (NoSuchElementException | ItemNotFoundException e) {
@@ -268,6 +265,7 @@ public class JdbcNewHireRepository implements NewHire {
 			result.next();
 			return result.getLong(1);
 		} catch (Exception e) {
+			e.printStackTrace();
 			logger.log(Level.SEVERE, e.getMessage());
 			return 0;
 		}
@@ -279,9 +277,118 @@ public class JdbcNewHireRepository implements NewHire {
 			SELECT_EMPLOYEE.setLong(1, id);
 			ResultSet result = SELECT_EMPLOYEE.executeQuery();
 			if(result.next()){
-				
 				HireAbstractModel hireModel = new HireModel();
-				//ADD NewHire Object fill
+				hireModel.addField("contract_ref", result.getString("contract_ref"));
+				hireModel.addField("ID", result.getString("ID"));
+				if(result.getInt("eeid") != 0){
+					hireModel.addField("eeid", new Integer(result.getInt("eeid")).toString());
+				} else {
+					hireModel.addField("eeid", "");
+				}
+				hireModel.addField("surname", result.getString("surname"));
+				hireModel.addField("forenames", result.getString("forename"));
+				hireModel.addField("address_line1", result.getString("address_line1"));
+				hireModel.addField("address_line2", result.getString("address_line2"));
+				hireModel.addField("city", result.getString("city"));
+				hireModel.addField("postal_code", result.getString("postal_code"));
+				try {
+					hireModel.addField("country", opts.findName(opts.getCountries(), result.getInt("country")));
+				} catch (ItemNotFoundException e) {
+					logger.log(Level.WARNING, "Couldn't convert country value - used UK instead.");
+					hireModel.addField("country", "UK");
+				}
+				hireModel.addField("lm_name", result.getString("line_manager"));
+				hireModel.addField("lm_phone_no", result.getString("line_manager_phone"));
+				hireModel.addField("signatory_name_req", new Boolean(result.getBoolean("signatory_name_required")).toString());
+				hireModel.addField("signatory_name", result.getString("signatory_name"));
+				hireModel.addField("position_number", new Integer(result.getInt("position_number")).toString());
+				hireModel.addField("position_title", result.getString("position_title"));
+				try {
+					hireModel.addField("work_contract", opts.findName(opts.getWork_contracts(), result.getInt("work_contract")));
+				} catch (ItemNotFoundException e) {
+					logger.log(Level.WARNING, "Couldn't convert work contract value. Used Full Time instead.");
+					hireModel.addField("work_contract", "Full Time");
+				}
+				try {
+					hireModel.addField("contract_type", opts.findName(opts.getContract_types(), result.getInt("contract_type")));
+				} catch (ItemNotFoundException e) {
+					logger.log(Level.WARNING, "Couldn't convert contract type value. Used Permanent instead.");
+					hireModel.addField("contract_type", "Permanent");
+				}
+				hireModel.addField("job_grade", result.getString("job_grade"));
+				hireModel.addField("salary", new Float(result.getFloat("salary")).toString());
+				if(result.getString("additional_wage_type1") != null){
+					hireModel.addField("addWageType1", result.getString("additional_wage_type1"));
+				} else {
+					hireModel.addField("addWageType1", "");
+				}
+				if(result.getFloat("additional_wage_typeAmount1") != 0.0){
+					hireModel.addField("addWageTypeAmount1", new Float(result.getFloat("additional_wage_typeAmount1")).toString());
+				} else {
+					hireModel.addField("addWageType1", "");
+				}
+				if(result.getString("additional_wage_type1") != null){
+					hireModel.addField("addWageType1", result.getString("additional_wage_type1"));
+				} else {
+					hireModel.addField("addWageType1", "");
+				}
+				if(result.getFloat("additional_wage_typeAmount2") != 0.0){
+					hireModel.addField("addWageTypeAmount2", new Float(result.getFloat("additional_wage_typeAmount2")).toString());
+				} else {
+					hireModel.addField("addWageType2", "");
+				}
+				hireModel.addField("business_area", result.getString("business_area"));
+				hireModel.addField("cts", new Boolean(result.getBoolean("CTS")).toString());
+				hireModel.addField("competition_compliance", new Boolean(result.getBoolean("competition_compliance")).toString());
+				if(result.getDate("contract_start_date") != null){
+					hireModel.addField("start_date", new SimpleDateFormat("dd-MM-yyyy").format(result.getDate("contract_start_date")));
+				} else {
+					hireModel.addField("start_date", "");
+				}
+				if(result.getDate("contract_end_date") != null){
+					hireModel.addField("contract_end_date", new SimpleDateFormat("dd-MM-yyyy").format(result.getDate("contract_end_date")));
+				} else {
+					hireModel.addField("contract_end_date", "");
+				}
+				hireModel.addField("date_tbc", new Boolean(result.getBoolean("date_TBC")).toString());
+				hireModel.addField("hours_of_work", new Float(result.getFloat("hours_of_work")).toString());
+				hireModel.addField("probation_period", new Boolean(result.getBoolean("probation")).toString());
+				hireModel.addField("duration_of_probation", new Integer(result.getInt("probation_duration")).toString());
+				hireModel.addField("sign_on_bonus", new Boolean(result.getBoolean("sign_on_bonus")).toString());
+				hireModel.addField("sign_on_bonus_amount", new Float(result.getFloat("sign_on_bonus_value")).toString());
+				hireModel.addField("company_credit_card", new Boolean(result.getBoolean("company_credit_card")).toString());
+				hireModel.addField("travel_supplement", new Boolean(result.getBoolean("travel_supp")).toString());
+				if(result.getDate("travel_supp_date") != null){
+					hireModel.addField("travel_supplement_start", new SimpleDateFormat("dd-MM-yyyy").format(result.getDate("travel_supp_date")));
+				} else {
+					hireModel.addField("travel_supplement_start", "");
+				}
+				hireModel.addField("travel_supplement_duration", new Integer(result.getInt("travel_supp_duration")).toString());
+				hireModel.addField("travel_supplement_amount", new Float(result.getFloat("travel_supp_amount")).toString());
+				hireModel.addField("pence_per_mile", new Float(result.getFloat("pence_per_mile")).toString());
+				hireModel.addField("relocation", new Boolean(result.getBoolean("relocation")).toString());
+				hireModel.addField("relocation_amount", new Float(result.getFloat("relocation_amount")).toString());
+				hireModel.addField("relocation_area", result.getString("relocation_area"));
+				hireModel.addField("personal_qualification", new Boolean(result.getBoolean("personal_qualification")).toString());
+				hireModel.addField("mobile_phone", new Boolean(result.getBoolean("mobile_phone")).toString());
+				hireModel.addField("professional_subs", new Boolean(result.getBoolean("professional_subs")).toString());
+				try{
+					hireModel.addField("company_car", opts.findName(opts.getCar_options(), result.getInt("company_car")));
+				} catch (ItemNotFoundException e){
+					logger.log(Level.WARNING, "Failed to convert company car value. None used instead.");
+					hireModel.addField("company_care", "None");
+				}
+				hireModel.addField("mcbc_sharps", result.getString("sharps"));
+				hireModel.addField("next_salary_review", new SimpleDateFormat("dd-MM-yyyy").format(result.getDate("next_salary_review")));
+				try {
+					hireModel.addField("non_negotiated", opts.findName(opts.getEe_groups(), result.getInt("employee_group")));
+				} catch (ItemNotFoundException e) {
+					logger.log(Level.WARNING, "Failed to convert employee group value. Non-negotiated used instead.");
+					hireModel.addField("non_negotiated", "Non-negotiated");
+				}
+				hireModel.addField("reason_for_contract", result.getString("reason_for_contract"));
+				hireModel.addField("location", result.getString("location"));
+				hireModel.addField("working_visa_paragraph", result.getString("working_visa"));
 				
 				return hireModel;
 			} else {

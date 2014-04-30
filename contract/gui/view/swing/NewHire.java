@@ -916,6 +916,7 @@ public class NewHire extends SwingView {
 	 */
 	@Override
 	public void extractDataFromModel() {
+		eeid.setText(model.get("eeid"));
 		name.setText(model.get("forenames"));
 		lName.setText(model.get("surname"));
 		addressLine1.setText(model.get("address_line1"));
@@ -936,6 +937,7 @@ public class NewHire extends SwingView {
 		jobN.setText(model.get("position_number"));
 		location.setText(model.get("location"));
 		bu.setText(model.get("business_area"));
+		hoursWork.setText(model.get("hours_of_work"));
 		
 		//Translate string value to integer index position for Combo Box
 		if(model.get("contract_type").equals("Permanent")){
@@ -963,7 +965,7 @@ public class NewHire extends SwingView {
 		} else {
 			signatoryReq.setSelected(false);
 		}
-		if(!model.get("signatory_name").equals("")){
+		if(model.get("signatory_name") != null && !model.get("signatory_name").equals("")){
 			signatoryName.setText(model.get("signatory_name"));
 		}
 		try {
@@ -1269,7 +1271,7 @@ public class NewHire extends SwingView {
 		hireModel.addField("lm_name", manager.getText());
 		hireModel.addField("lm_phone_no", manPhone.getText());
 		hireModel.addField("start_date", dateFormat.format(effDate.getDate()));
-		hireModel.addField("end_date", "");
+		hireModel.addField("contract_end_date", "");
 		hireModel.addField("hours_of_work", hoursWork.getText());
 		if(dateTBC.isSelected()){
 			hireModel.addField("date_tbc", "true");
@@ -1384,6 +1386,15 @@ public class NewHire extends SwingView {
 		hireModel.addField("reason_for_contract", "");
 		//Add newly populated model map to form.
 		this.model = hireModel.getHireDetails();
+	}
+	
+	/**
+	 * This method sets id field
+	 * @param int id
+	 */
+	@Override
+	public void setID(long id){
+		conID.setText(new Long(id).toString());
 	}
 	
 	/**

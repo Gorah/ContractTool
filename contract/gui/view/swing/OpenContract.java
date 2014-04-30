@@ -247,14 +247,14 @@ public class OpenContract extends SwingView {
 	}
 
 	@Override
-	public void saveDataToModel() {
-		// TODO Auto-generated method stub
-		
-	}
+	public void saveDataToModel() {}
 
 	@Override
 	public boolean verifyForm() {
 		return true;
 	}
+
+	@Override
+	public void setID(long id) {}
 
 }

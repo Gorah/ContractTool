@@ -83,6 +83,8 @@ public abstract class AbstractView {
 	 */
 	public abstract boolean verifyForm();
 	
+	public abstract void setID(long l);
+	
 	/**
 	 * This is rendering method stub.
 	 */

@@ -126,9 +126,10 @@ public class AppController {
 		if(getView(Name.NEW_HIRE).verifyForm()){
 			try {
 				getView(Name.NEW_HIRE).saveDataToModel();
-				this.contractTool.getNewHireRepository().add(new HireModel(getView(Name.NEW_HIRE).getModel()));
+				getView(Name.NEW_HIRE).setID((this.contractTool.getNewHireRepository().add(new HireModel(getView(Name.NEW_HIRE).getModel()))));;
 			} catch (EntityAlreadyExistsException e) {
 				logger.log(Level.WARNING, "Couldn't save hire - entity already exists in DB.");
+				System.out.println("entry already exists");
 			}
 		}
 	}

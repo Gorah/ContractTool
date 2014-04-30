@@ -260,5 +260,15 @@ public class JDBCOptionsRepository implements ComboOptions {
 		}
 		throw new ItemNotFoundException("Value not found in option list.");
 	}
-	
+
+
+	@Override
+	public String findName(ComboItem[] items, int id) throws ItemNotFoundException{
+			for(ComboItem item : items){
+				if(item.getId() == id){
+					return item.toString();
+				}
+			}			
+			throw new ItemNotFoundException();
+	}	
 }
