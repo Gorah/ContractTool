@@ -112,8 +112,11 @@ public class AppController {
 		if(ext.toLowerCase().contains("docx")){
 			try {
 				DocxHireModel nhData = new DocxHireModel(fileName);
+				//read file data and load it to model
 				nhData.readDataFromFile();
+				//assign model to the form
 				getView(Name.NEW_HIRE).setModel(nhData.getHireDetails());
+				//populate form fields taking data from model
 				getView(Name.NEW_HIRE).extractDataFromModel();
 			} catch (InvalidFormatException	| IOException e) {
 				e.printStackTrace();
