@@ -106,7 +106,9 @@ public class AppController {
 	 * @param String file name
 	 */
 	public void readFile(String fileName){
+		//get the source file extension 
 		String ext = fileName.substring(fileName.lastIndexOf(".") + 1).trim();
+		//basing on file extension create appropriate model object
 		if(ext.toLowerCase().contains("docx")){
 			try {
 				DocxHireModel nhData = new DocxHireModel(fileName);
@@ -123,9 +125,12 @@ public class AppController {
 	 * This method handles saving new hire data to data source
 	 */
 	public void saveNewHire(){
+		//if form verification passed, save the data
 		if(getView(Name.NEW_HIRE).verifyForm()){
 			try {
+				//build model from form data
 				getView(Name.NEW_HIRE).saveDataToModel();
+				//execute save and set ID of the record in the ID field of the form
 				getView(Name.NEW_HIRE).setID((this.contractTool.getNewHireRepository().add(new HireModel(getView(Name.NEW_HIRE).getModel()))));;
 			} catch (EntityAlreadyExistsException e) {
 				logger.log(Level.WARNING, "Couldn't save hire - entity already exists in DB.");
