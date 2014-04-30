@@ -32,7 +32,19 @@ public class JdbcNewHireRepository implements NewHire {
 				+"?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, "
 				+"?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)", PreparedStatement.RETURN_GENERATED_KEYS);
 		SELECT_EMPLOYEE = conn.prepareStatement("SELECT * FROM Hires WHERE ID = ?");
-		UPDATE_EMPLOYEE = conn.prepareStatement("UPDATE Hires SET WHERE ID = ?");
+		UPDATE_EMPLOYEE = conn.prepareStatement("UPDATE Hires SET contract_ref = ?, eeid = ?, surname = ?, "
+				+"forename = ?, address_line1 = ?, address_line2 = ?, city = ?, postal_code = ?, country = ?, "
+				+"line_manager = ?, line_manager_phone = ?, signatory_name_required = ?, signatory_name = ?, "
+				+"position_number = ?, position_title = ?, work_contract = ?, contract_type = ?, job_grade = ?, "
+				+"salary = ?, additional_wage_type1 = ?, additional_wage_typeAmount1 = ?, additional_wage_type2 = ?, "
+				+"additional_wage_typeAmount2 = ?, business_area = ?, CTS = ?, competition_compliance = ?, "
+				+"contract_start_date = ?, contract_end_date = ?, date_TBC = ?, hours_of_work = ?, "
+				+"probation = ?, probation_duration = ?, sign_on_bonus = ?, sign_on_bonus_value = ?, "
+				+"company_credit_card = ?, travel_supp = ?, travel_supp_date = ?, travel_supp_duration = ?, "
+				+"travel_supp_amount = ?, pence_per_mile = ?, relocation = ?, relocation_amount = ?, "
+				+"relocation_area = ?, personal_qualification = ?, mobile_phone = ?, professional_subs = ?, "
+				+"company_car = ?, sharps = ?, next_salary_review = ?, employee_group = ?, reason_for_contract = ?, "
+				+"location = ?, working_visa = ? WHERE ID = ?");
 	}
 
 	
@@ -183,7 +195,7 @@ public class JdbcNewHireRepository implements NewHire {
 			}
 			INSERT_EMPLOYEE.setString(33, hire.getDetail("sign_on_bonus"));
 			if(!hire.getDetail("sign_on_bonus_amount").isEmpty()){
-				INSERT_EMPLOYEE.setFloat(34, Float.parseFloat(hire.getDetail("sign_on_bonus")));
+				INSERT_EMPLOYEE.setFloat(34, Float.parseFloat(hire.getDetail("sign_on_bonus_amount")));
 			} else {
 				INSERT_EMPLOYEE.setNull(34, Types.FLOAT);
 			}
@@ -205,12 +217,12 @@ public class JdbcNewHireRepository implements NewHire {
 				INSERT_EMPLOYEE.setNull(38, Types.INTEGER);
 			}
 			if(!hire.getDetail("travel_supplement_amount").isEmpty()){
-				INSERT_EMPLOYEE.setFloat(39, Float.parseFloat(hire.getDetail("trvel_supplement_duration")));
+				INSERT_EMPLOYEE.setFloat(39, Float.parseFloat(hire.getDetail("travel_supplement_amount")));
 			} else {
 				INSERT_EMPLOYEE.setNull(39, Types.FLOAT);
 			}
 			if(!hire.getDetail("pence_per_mile").isEmpty()){
-				INSERT_EMPLOYEE.setFloat(40, Float.parseFloat(hire.getDetail("pene_per_mile")));
+				INSERT_EMPLOYEE.setFloat(40, Float.parseFloat(hire.getDetail("pence_per_mile")));
 			} else {
 				INSERT_EMPLOYEE.setNull(40, Types.FLOAT);
 			}
@@ -414,6 +426,192 @@ public class JdbcNewHireRepository implements NewHire {
 		}
 		
 		try {
+			//Fill prepared statement with data
+			UPDATE_EMPLOYEE.setString(1, hire.getDetail("contract_ref"));
+			if(hire.getDetail("eeid").isEmpty()){
+				UPDATE_EMPLOYEE.setNull(2, Types.INTEGER);
+			} else {
+				UPDATE_EMPLOYEE.setInt(2, Integer.parseInt(hire.getDetail("eeid")));
+			}
+			UPDATE_EMPLOYEE.setString(3, hire.getDetail("surname"));
+			UPDATE_EMPLOYEE.setString(4, hire.getDetail("forenames"));
+			UPDATE_EMPLOYEE.setString(5, hire.getDetail("address_line1"));
+			if(hire.getDetail("address_line2").isEmpty()){
+				UPDATE_EMPLOYEE.setNull(6, Types.VARCHAR);
+			} else {
+				UPDATE_EMPLOYEE.setString(6, hire.getDetail("address_line2"));
+			}
+			UPDATE_EMPLOYEE.setString(7,  hire.getDetail("city"));
+			UPDATE_EMPLOYEE.setString(8, hire.getDetail("postal_code"));
+			try {
+				UPDATE_EMPLOYEE.setInt(9, opts.findID(opts.getCountries(), hire.getDetail("country")));
+			} catch (NoSuchElementException | ItemNotFoundException e) {
+				logger.log(Level.WARNING, "Couldn't find country element. Defaulted to: UK.");
+				UPDATE_EMPLOYEE.setInt(9, 2);
+			}
+			if(hire.getDetail("lm_name").isEmpty()){
+				UPDATE_EMPLOYEE.setNull(10, Types.VARCHAR);
+			} else {
+				UPDATE_EMPLOYEE.setString(10, hire.getDetail("lm_name"));
+			}
+			if(hire.getDetail("lm_phone_no").isEmpty()){
+				UPDATE_EMPLOYEE.setNull(11, Types.VARCHAR);
+			} else {
+				UPDATE_EMPLOYEE.setString(11, hire.getDetail("lm_phone_no"));
+			}
+			UPDATE_EMPLOYEE.setString(12, hire.getDetail("signatory_name_req"));
+			if(hire.getDetail("signatory_name").isEmpty()){
+				UPDATE_EMPLOYEE.setNull(13, Types.VARCHAR);
+			} else {
+				UPDATE_EMPLOYEE.setString(13, hire.getDetail("signatory_name"));
+			}
+			UPDATE_EMPLOYEE.setInt(14, Integer.parseInt(hire.getDetail("position_number")));
+			UPDATE_EMPLOYEE.setString(15, hire.getDetail("position_title"));
+			try {
+				UPDATE_EMPLOYEE.setInt(16, opts.findID(opts.getWork_contracts(), hire.getDetail("work_contract")));
+			} catch (NoSuchElementException | ItemNotFoundException e) {
+				logger.log(Level.WARNING, "Couldn't find work contract element. Defaulted to: Full Time");
+				UPDATE_EMPLOYEE.setInt(16, 1);
+			}
+			try {
+				UPDATE_EMPLOYEE.setInt(17, opts.findID(opts.getContract_types(), hire.getDetail("contract_type")));
+			} catch (NoSuchElementException | ItemNotFoundException e) {
+				logger.log(Level.WARNING, "Couldn't find contract type element. Defaulted to: Permanent");
+				UPDATE_EMPLOYEE.setInt(17, 1);
+			}
+			UPDATE_EMPLOYEE.setInt(18, Integer.parseInt(hire.getDetail("job_grade")));
+			String[] salArr = hire.getDetail("salary").split(",");
+			UPDATE_EMPLOYEE.setFloat(19, Float.parseFloat(salArr[0] + salArr[1]));
+			//add splitting string on comma
+			if(hire.getDetail("addWageType1").isEmpty()){
+				UPDATE_EMPLOYEE.setNull(20, Types.VARCHAR);
+			} else {
+				UPDATE_EMPLOYEE.setString(20, hire.getDetail("addWageType1"));
+			}
+			if(hire.getDetail("addWageTypeAmount1").isEmpty()){
+				UPDATE_EMPLOYEE.setNull(21, Types.FLOAT);
+			} else {
+				UPDATE_EMPLOYEE.setFloat(21, Float.parseFloat(hire.getDetail("addWageTypeAmount1")));
+			}
+			if(hire.getDetail("addWageType2").isEmpty()){
+				UPDATE_EMPLOYEE.setNull(22, Types.VARCHAR);
+			} else {
+				UPDATE_EMPLOYEE.setString(22, hire.getDetail("addWageType1"));
+			}
+			if(hire.getDetail("addWageTypeAmount2").isEmpty()){
+				UPDATE_EMPLOYEE.setNull(23, Types.FLOAT);
+			} else {
+				UPDATE_EMPLOYEE.setFloat(23, Float.parseFloat(hire.getDetail("addWageTypeAmount1")));
+			}
+			UPDATE_EMPLOYEE.setString(24, hire.getDetail("business_area"));
+			UPDATE_EMPLOYEE.setString(25, hire.getDetail("cts"));
+			UPDATE_EMPLOYEE.setString(26, hire.getDetail("competition_compliance"));
+			
+			//CAST DATE STRING TO ISO FORMAT AND ADD TO DB!!!
+			if(!hire.getDetail("date_tbc").toLowerCase().equals("true")){
+				try {
+					UPDATE_EMPLOYEE.setString(27, new java.sql.Date(new SimpleDateFormat("dd-MM-yyyy").parse(hire.getDetail("start_date")).getTime()).toString());
+				} catch (NoSuchElementException | ParseException e) {
+					logger.log(Level.WARNING, "Could not convert start date string to date.");
+					UPDATE_EMPLOYEE.setNull(27, Types.DATE);
+				}
+			} else {
+				UPDATE_EMPLOYEE.setNull(27, Types.DATE);
+			}
+			if(!hire.getDetail("contract_end_date").isEmpty()){
+				try {
+					UPDATE_EMPLOYEE.setString(28, new java.sql.Date(new SimpleDateFormat("dd-MM-yyyy").parse(hire.getDetail("contract_end_date")).getTime()).toString());
+				} catch (NoSuchElementException | ParseException e) {
+					UPDATE_EMPLOYEE.setNull(28, Types.DATE);
+					logger.log(Level.WARNING, "Could not convert end date string to date.");
+				}
+			} else {
+				UPDATE_EMPLOYEE.setNull(28, Types.DATE);
+			}
+			UPDATE_EMPLOYEE.setString(29, hire.getDetail("date_tbc"));
+			UPDATE_EMPLOYEE.setFloat(30, Float.parseFloat(hire.getDetail("hours_of_work")));
+			UPDATE_EMPLOYEE.setString(31, hire.getDetail("probation_period"));
+			if(!hire.getDetail("duration_of_probation").isEmpty()){
+				UPDATE_EMPLOYEE.setInt(32, Integer.parseInt(hire.getDetail("duration_of_probation")));
+			} else {
+				UPDATE_EMPLOYEE.setNull(32, Types.INTEGER);
+			}
+			UPDATE_EMPLOYEE.setString(33, hire.getDetail("sign_on_bonus"));
+			if(!hire.getDetail("sign_on_bonus_amount").isEmpty()){
+				UPDATE_EMPLOYEE.setFloat(34, Float.parseFloat(hire.getDetail("sign_on_bonus_amount")));
+			} else {
+				UPDATE_EMPLOYEE.setNull(34, Types.FLOAT);
+			}
+			UPDATE_EMPLOYEE.setString(35, hire.getDetail("company_credit_card"));
+			UPDATE_EMPLOYEE.setString(36, hire.getDetail("travel_supplement"));
+			if(!hire.getDetail("travel_supplement_start").isEmpty()){
+				try {
+					UPDATE_EMPLOYEE.setString(37, new java.sql.Date(new SimpleDateFormat("dd-MM-yyyy").parse(hire.getDetail("travel_supplement_start")).getTime()).toString());
+				} catch (NoSuchElementException | ParseException e) {
+					UPDATE_EMPLOYEE.setNull(37, Types.DATE);
+					logger.log(Level.WARNING, "Could not convert travel supplement start date string to date format.");
+				}
+			} else {
+				UPDATE_EMPLOYEE.setNull(37, Types.DATE);
+			}
+			if(!hire.getDetail("travel_supplement_duration").isEmpty()){
+				UPDATE_EMPLOYEE.setInt(38, Integer.parseInt(hire.getDetail("travel_supplement_duration")));
+			} else {
+				UPDATE_EMPLOYEE.setNull(38, Types.INTEGER);
+			}
+			if(!hire.getDetail("travel_supplement_amount").isEmpty()){
+				UPDATE_EMPLOYEE.setFloat(39, Float.parseFloat(hire.getDetail("travel_supplement_amount")));
+			} else {
+				UPDATE_EMPLOYEE.setNull(39, Types.FLOAT);
+			}
+			if(!hire.getDetail("pence_per_mile").isEmpty()){
+				UPDATE_EMPLOYEE.setFloat(40, Float.parseFloat(hire.getDetail("pence_per_mile")));
+			} else {
+				UPDATE_EMPLOYEE.setNull(40, Types.FLOAT);
+			}
+			UPDATE_EMPLOYEE.setString(41, hire.getDetail("relocation"));
+			if(!hire.getDetail("relocation_amount").isEmpty()){
+				UPDATE_EMPLOYEE.setFloat(42, Float.parseFloat(hire.getDetail("relocation_amount")));
+			} else {
+				UPDATE_EMPLOYEE.setNull(42, Types.FLOAT);
+			}
+			if(!hire.getDetail("relocation_area").isEmpty()){
+				UPDATE_EMPLOYEE.setString(43, hire.getDetail("relocation_area"));
+			} else {
+				UPDATE_EMPLOYEE.setNull(43, Types.VARCHAR);
+			}
+			UPDATE_EMPLOYEE.setString(44, hire.getDetail("personal_qualification"));
+			UPDATE_EMPLOYEE.setString(45, hire.getDetail("mobile_phone"));
+			UPDATE_EMPLOYEE.setString(46, hire.getDetail("professional_subs"));
+			try {
+				UPDATE_EMPLOYEE.setInt(47, opts.findID(opts.getCar_options(), hire.getDetail("company_car")));
+			} catch (NoSuchElementException | ItemNotFoundException e) {
+				UPDATE_EMPLOYEE.setInt(47, 1);
+				logger.log(Level.WARNING, "Couldn't find company car value. Used 'None' as default.");
+			}
+			
+			if(!hire.getDetail("mcbc_sharps").isEmpty()){
+				UPDATE_EMPLOYEE.setString(48, hire.getDetail("mcbc_sharps"));
+			} else {
+				UPDATE_EMPLOYEE.setNull(48, Types.VARCHAR);
+			}
+			
+			UPDATE_EMPLOYEE.setString(49, hire.getDetail("next_salary_review"));
+			
+			try {
+				UPDATE_EMPLOYEE.setInt(50, opts.findID(opts.getEe_groups(), hire.getDetail("non_negotiated")));
+			} catch (NoSuchElementException | ItemNotFoundException e) {
+				UPDATE_EMPLOYEE.setInt(50, 1);
+				logger.log(Level.WARNING, "Couldn't determine employee group value. Non-negotiated used instead.");
+			}
+			if(!hire.getDetail("reason_for_contract").isEmpty()){
+				UPDATE_EMPLOYEE.setString(51, hire.getDetail("reason_for_contract"));
+			} else {
+				UPDATE_EMPLOYEE.setNull(51, Types.VARCHAR);
+			}
+			UPDATE_EMPLOYEE.setString(52, hire.getDetail("location"));
+			UPDATE_EMPLOYEE.setString(53, hire.getDetail("working_visa_paragraph"));
+			UPDATE_EMPLOYEE.setLong(54, Long.parseLong(hire.getDetail("ID")));
 			if(UPDATE_EMPLOYEE.executeUpdate() == 0){
 				return false;
 			}

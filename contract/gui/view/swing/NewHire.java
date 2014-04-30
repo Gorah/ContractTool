@@ -1284,9 +1284,10 @@ public class NewHire extends SwingView {
 			hireModel.addField("cts", "false");
 		}
 		hireModel.addField("salary", annPay.getText());
-		if(!shiftPay.isSelected()){
+		System.out.println(shiftPay.isSelected());
+		if(shiftPay.isSelected()){
 			hireModel.addField("addWageType1", "shift pay");
-			hireModel.addField("addWageTypeAmount1", shiftVal.getText());
+			hireModel.addField("addWageTypeAmount1", shiftPayVal.getText());
 			hireModel.addField("addWageType2", "");
 			hireModel.addField("addWageTypeAmount2", "");
 		} else {

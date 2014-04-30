@@ -14,6 +14,7 @@ import contract.logging.ContractLogger;
 import contract.model.DocxHireModel;
 import contract.model.HireModel;
 import contract.repository.EntityAlreadyExistsException;
+import contract.repository.EntityNotFoundException;
 
 /**
  * AppController controls the flow of the application. Here views are 
@@ -136,7 +137,11 @@ public class AppController {
 				//execute save and set ID of the record in the ID field of the form
 				getView(Name.NEW_HIRE).setID((this.contractTool.getNewHireRepository().add(new HireModel(getView(Name.NEW_HIRE).getModel()))));;
 			} catch (EntityAlreadyExistsException e) {
-				logger.log(Level.WARNING, "Couldn't save hire - entity already exists in DB.");
+				try {
+					this.contractTool.getNewHireRepository().update(new HireModel(getView(Name.NEW_HIRE).getModel()));
+				} catch (EntityNotFoundException e1) {
+					e1.printStackTrace();
+				}
 				System.out.println("entry already exists");
 			}
 		}
