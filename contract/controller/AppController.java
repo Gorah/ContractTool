@@ -131,6 +131,7 @@ public class AppController {
 	public void saveNewHire(){
 		//if form verification passed, save the data
 		if(getView(Name.NEW_HIRE).verifyForm()){
+			//check if entry with this ID exists already if not, add new one. Otherwise update entry contents.
 			try {
 				//build model from form data
 				getView(Name.NEW_HIRE).saveDataToModel();
@@ -140,9 +141,8 @@ public class AppController {
 				try {
 					this.contractTool.getNewHireRepository().update(new HireModel(getView(Name.NEW_HIRE).getModel()));
 				} catch (EntityNotFoundException e1) {
-					e1.printStackTrace();
+					logger.log(Level.SEVERE, "Could not save data!");
 				}
-				System.out.println("entry already exists");
 			}
 		}
 	}
