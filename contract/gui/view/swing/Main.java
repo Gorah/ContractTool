@@ -174,7 +174,9 @@ public class Main extends SwingView {
 				menuBar.remove(menu);
 				menu.remove(saveNHData);
 				menu.remove(exitProg);
-				menu.remove(3);
+				if(menu.getComponentCount() == 3){
+					menu.remove(3);
+				}
 				menu.add(exitProg);
 				menuBar.add(menu);
 				menuBar.remove(edit);

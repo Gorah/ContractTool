@@ -1,6 +1,5 @@
 package contract.gui.view.swing.filters;
 import java.io.File;
-import javax.swing.ImageIcon;
 
 /**
  * Utils is a support class providing file extension 

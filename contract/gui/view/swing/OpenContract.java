@@ -7,6 +7,8 @@ import java.awt.GridLayout;
 import java.awt.Insets;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.sql.Date;
+import java.util.Comparator;
 
 import javax.swing.JButton;
 import javax.swing.JLabel;
@@ -20,6 +22,7 @@ import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
 import javax.swing.table.TableRowSorter;
 
+import contract.gui.view.swing.table.DateRenderer;
 import contract.gui.view.swing.table.NewHireTableModel;
 
 /**
@@ -50,6 +53,12 @@ public class OpenContract extends SwingView {
 	private JTable tab; 
 	private TableRowSorter<NewHireTableModel> sorter;
 	private JScrollPane scrollPane;
+	private Comparator<Integer> intCompare = new Comparator<Integer>() {
+	    @Override
+	    public int compare(Integer o1, Integer o2) {
+	        return o1 - o2;
+	    }
+	};
 	
 	/**
 	 * Only constructor for the class.
@@ -60,7 +69,10 @@ public class OpenContract extends SwingView {
 		this.entryData = data;
 		
 		tab = new JTable(entryData);
+		tab.setDefaultRenderer(Date.class, new DateRenderer());
 		sorter = new TableRowSorter<NewHireTableModel>(entryData);
+		sorter.setComparator(0, intCompare);
+		sorter.setComparator(2, intCompare);
 		tab.setPreferredScrollableViewportSize(new Dimension(500, 70));
 		tab.setFillsViewportHeight(true);
 		tab.setRowSorter(sorter);

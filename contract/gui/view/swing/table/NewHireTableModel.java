@@ -1,5 +1,6 @@
 package contract.gui.view.swing.table;
 
+import java.sql.Date;
 import java.util.List;
 
 import javax.swing.table.AbstractTableModel;
@@ -37,6 +38,15 @@ public class NewHireTableModel extends AbstractTableModel{
 		return columns[column];
 	}
 
+	@Override
+	public Class<?> getColumnClass(int columnIndex) {
+		switch(columnIndex){
+		case 6:
+			return Date.class; 
+		}
+		return super.getColumnClass(columnIndex);
+	}
+	
 	@Override
 	public Object getValueAt(int row, int col) {
 		HireEntry hire = hires.get(row);
