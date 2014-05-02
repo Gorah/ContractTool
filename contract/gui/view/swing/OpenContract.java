@@ -53,6 +53,7 @@ public class OpenContract extends SwingView {
 	private JTable tab; 
 	private TableRowSorter<NewHireTableModel> sorter;
 	private JScrollPane scrollPane;
+	private JButton open = new JButton("Open");
 	private Comparator<Integer> intCompare = new Comparator<Integer>() {
 	    @Override
 	    public int compare(Integer o1, Integer o2) {
@@ -139,8 +140,14 @@ public class OpenContract extends SwingView {
 		searchConditions.add(surname, cons);
 		
 		//set border layout for button panel and add centred button to that panel
-		buttonPanel.setLayout(new BorderLayout());
-		buttonPanel.add(searchButton, BorderLayout.CENTER);
+		buttonPanel.setLayout(new GridBagLayout());
+		GridBagConstraints cons2 = new GridBagConstraints();
+		cons2.gridx = 0;
+		cons2.gridy = 0;
+		buttonPanel.add(searchButton, cons2);
+		cons2.gridx = 1;
+		buttonPanel.add(open, cons2);
+		open.addActionListener(new OpenButtonListener());
 		
 		//add button panel to search conditions container
 		cons.gridx = 2;
@@ -254,6 +261,20 @@ public class OpenContract extends SwingView {
             //TO IMPLEMENT
 		}
 		
+	}
+	
+	private class OpenButtonListener implements ActionListener{
+
+		@Override
+		public void actionPerformed(ActionEvent ev) {
+			try{
+				int viewRow = tab.getSelectedRow();
+				int modelRow = tab.convertRowIndexToModel(viewRow);
+				System.out.println(tab.getValueAt(viewRow, 0));
+			} catch (IndexOutOfBoundsException e){
+				System.out.println("Nothing selected!");
+			}
+		}
 	}
 	
 	/**
