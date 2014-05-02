@@ -37,12 +37,6 @@ public class OpenContract extends SwingView {
 	
 	private JPanel contents = new JPanel();
 	private GridLayout gLayout = new GridLayout(0, 1);
-	private JLabel eeidLabel = new JLabel("Employee ID");
-	private JTextField eeid = new JTextField(6);
-	private JLabel firstNameLabel = new JLabel("First Name");
-	private JTextField name = new JTextField(15);
-	private JLabel lastNameLabel = new JLabel("Last Name");
-	private JTextField surname = new JTextField(30);
 	private JButton searchButton = new JButton();
 	private JPanel searchConditions = new JPanel();
 	private JPanel buttonPanel = new JPanel(); 
@@ -98,47 +92,6 @@ public class OpenContract extends SwingView {
 		cons.fill = GridBagConstraints.BOTH;
 		cons.insets = new Insets(10, 20, 0, 0);
 		
-		//add employee ID label at x=0. y=0 coords
-		cons.gridx = 0;
-		cons.gridy = 0;
-		searchConditions.add(eeidLabel, cons);
-		
-		//add employee id text box at x=1, y=0
-		cons.gridx = 1;
-		cons.gridy = 0;
-		searchConditions.add(eeid, cons);
-		
-		//add interline panel 
-		cons.insets = new Insets(10, 40, 0, 40);
-		cons.gridx = 2;
-		cons.gridy = 0;
-		searchConditions.add(interLine, cons);
-		
-		//add first name label
-		cons.insets = new Insets(10, 20, 0, 0);
-		cons.gridx = 3;
-		cons.gridy = 0;
-		cons.anchor = GridBagConstraints.LINE_END;
-		searchConditions.add(firstNameLabel, cons);
-		
-		//add first name text box 
-		cons.gridx = 4;
-		cons.gridy = 0;
-		cons.anchor = GridBagConstraints.CENTER;
-		searchConditions.add(name, cons);
-		
-		//add last name label
-		cons.gridx = 3;
-		cons.gridy = 1;
-		cons.anchor = GridBagConstraints.LINE_END;
-		searchConditions.add(lastNameLabel, cons);
-		
-		//add last name text box
-		cons.gridx = 4;
-		cons.gridy = 1;
-		cons.anchor = GridBagConstraints.CENTER;
-		searchConditions.add(surname, cons);
-		
 		//set border layout for button panel and add centred button to that panel
 		buttonPanel.setLayout(new GridBagLayout());
 		GridBagConstraints cons2 = new GridBagConstraints();
@@ -172,14 +125,12 @@ public class OpenContract extends SwingView {
 		cons.insets = new Insets(10, 20, 0, 0);
 		searchConditions.add(filterText, cons);
 		
+		//create table with result set and add it to main container
+		contents.add(scrollPane);
 		//add search conditions panel to main container
 		contents.add(searchConditions);
 		
-		//create table with result set and add it to main container
 		
-		
-		//res = new DataTable();
-		contents.add(scrollPane);
 	}
 
 	/**
