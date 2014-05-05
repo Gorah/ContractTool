@@ -179,7 +179,7 @@ public class OpenContract extends SwingView {
 			try{
 				int viewRow = tab.getSelectedRow();
 				System.out.println(tab.getValueAt(viewRow, 0));
-				appController.open_newHire_from_list((Integer) tab.getValueAt(viewRow, 0));
+				appController.open_newHire_from_list((Long) tab.getValueAt(viewRow, 0));
 			} catch (IndexOutOfBoundsException e){
 				System.out.println("Nothing selected!");
 			}
