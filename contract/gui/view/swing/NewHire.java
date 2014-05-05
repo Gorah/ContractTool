@@ -1113,6 +1113,7 @@ public class NewHire extends SwingView {
 		mainContainer.getContentPane().removeAll();
 		clear();
 		mainContainer.add(nhPanel);
+		mainContainer.setSize(800, 700);
 		mainContainer.setVisible(true);
 
 

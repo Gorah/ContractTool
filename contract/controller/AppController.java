@@ -12,6 +12,7 @@ import contract.gui.view.AbstractView;
 import contract.gui.view.AbstractView.Name;
 import contract.logging.ContractLogger;
 import contract.model.DocxHireModel;
+import contract.model.HireAbstractModel;
 import contract.model.HireModel;
 import contract.repository.EntityAlreadyExistsException;
 import contract.repository.EntityNotFoundException;
@@ -145,6 +146,23 @@ public class AppController {
 				}
 			}
 		}
+	}
+	
+	
+	public void open_newHire_from_list(long id){
+		HireAbstractModel hireModel;
+		try {
+			hireModel = this.contractTool.getNewHireRepository().get(id);
+			getView(Name.NEW_HIRE).setModel(hireModel.getHireDetails());
+			//populate form fields taking data from model
+			getView(Name.NEW_HIRE).render();
+			getView(Name.NEW_HIRE).extractDataFromModel();
+			
+		} catch (EntityNotFoundException e) {
+			e.printStackTrace();
+		}
+		
+		
 	}
 		
 	/**
