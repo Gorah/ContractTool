@@ -1,15 +1,15 @@
 package contract.gui.view.swing;
 import java.awt.BorderLayout;
+import java.awt.Component;
 import java.awt.Dimension;
-import java.awt.GridBagConstraints;
-import java.awt.GridBagLayout;
-import java.awt.GridLayout;
-import java.awt.Insets;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.sql.Date;
 import java.util.Comparator;
 
+import javax.swing.BorderFactory;
+import javax.swing.Box;
+import javax.swing.BoxLayout;
 import javax.swing.JButton;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
@@ -36,12 +36,11 @@ import contract.gui.view.swing.table.NewHireTableModel;
 public class OpenContract extends SwingView {
 	
 	private JPanel contents = new JPanel();
-	private GridLayout gLayout = new GridLayout(0, 1);
-	private JButton searchButton = new JButton();
+	private BorderLayout gLayout = new BorderLayout();
+	private JLabel searchConsL = new JLabel("Find:");
 	private JPanel searchConditions = new JPanel();
-	private JPanel buttonPanel = new JPanel(); 
-	private JPanel interLine = new JPanel();
-	private JLabel filterLabel = new JLabel("Filter Text:");
+	private JPanel submit = new JPanel();
+	private JPanel navPanel = new JPanel();
 	private JTextField filterText = new JTextField();
 	private NewHireTableModel entryData;
 	private JTable tab; 
@@ -63,6 +62,8 @@ public class OpenContract extends SwingView {
 		super(Name.OPEN_CONTRACT);
 		this.entryData = data;
 		
+		//Change main container of this form to BORDER LAYOUT!!!!
+		
 		tab = new JTable(entryData);
 		tab.setDefaultRenderer(Date.class, new DateRenderer());
 		sorter = new TableRowSorter<NewHireTableModel>(entryData);
@@ -72,64 +73,44 @@ public class OpenContract extends SwingView {
 		tab.setFillsViewportHeight(true);
 		tab.setRowSorter(sorter);
 		tab.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
-		//hide filter box and label
-		filterLabel.setVisible(false);
-		filterText.setVisible(false);
 		scrollPane  = new JScrollPane(tab);
 		
 		//set grid layout for container panel
 		contents.setLayout(gLayout);
 		
-		//set Search button text and action listener
-		searchButton.setText("Search");
-		searchButton.addActionListener(new SearchButtonListener());
+		//set BoxLayout for searchConditions sub-panel
+		searchConditions.setLayout(new BoxLayout(searchConditions, BoxLayout.LINE_AXIS));
+
+		searchConditions.setBorder(BorderFactory.createEmptyBorder(10,150,10,150));
+		searchConditions.add(Box.createRigidArea(new Dimension(0,25)));
+		searchConsL.setAlignmentX(Component.LEFT_ALIGNMENT);
+		searchConditions.add(searchConsL);
+		searchConditions.add(Box.createRigidArea(new Dimension(10,0)));
+		searchConditions.add(filterText);
+		searchConditions.add(Box.createRigidArea(new Dimension(25,25)));
 		
-		//set GridBagLayout for searchConditions sub-panel
-		searchConditions.setLayout(new GridBagLayout());
+		navPanel.setLayout(new BoxLayout(navPanel, BoxLayout.PAGE_AXIS));
+		navPanel.add(searchConditions);
 		
-		//create new instance of constraints and pre configure them
-		GridBagConstraints cons = new GridBagConstraints();
-		cons.fill = GridBagConstraints.BOTH;
-		cons.insets = new Insets(10, 20, 0, 0);
+		//submit.setLayout(new BoxLayout(submit, BoxLayout.LINE_AXIS));
+		submit.setLayout(new BoxLayout(submit, BoxLayout.LINE_AXIS));
+		open.setAlignmentX(Component.CENTER_ALIGNMENT);
+		open.setMinimumSize(new Dimension(100, 100));
+		submit.add(Box.createHorizontalGlue());
+		submit.add(open);
+		submit.add(Box.createHorizontalGlue());
+		navPanel.add(submit);
 		
-		//set border layout for button panel and add centred button to that panel
-		buttonPanel.setLayout(new GridBagLayout());
-		GridBagConstraints cons2 = new GridBagConstraints();
-		cons2.gridx = 0;
-		cons2.gridy = 0;
-		buttonPanel.add(searchButton, cons2);
-		cons2.gridx = 1;
-		buttonPanel.add(open, cons2);
 		open.addActionListener(new OpenButtonListener());
-		
-		//add button panel to search conditions container
-		cons.gridx = 2;
-		cons.gridwidth = 2;
-		cons.gridy = 2;
-		cons.insets = new Insets(30, 20, 30, 0);
-		searchConditions.add(buttonPanel, cons);
-		
-		//add filter label
-		cons.gridx = 0;
-		cons.gridy = 3;
-		cons.anchor = GridBagConstraints.CENTER;
-		cons.insets = new Insets(10, 20, 0, 0);
-		searchConditions.add(filterLabel, cons);
-		
+				
 		//set listener for filter text box and add text box to container
 		filterText.getDocument().addDocumentListener(new DataTableListener());
-		cons.gridx = 1;
-		cons.gridy = 3;
-		cons.gridwidth = 3;
-		cons.anchor = GridBagConstraints.CENTER;
-		cons.insets = new Insets(10, 20, 0, 0);
-		searchConditions.add(filterText, cons);
 		
 		//create table with result set and add it to main container
-		contents.add(scrollPane);
-		//add search conditions panel to main container
-		contents.add(searchConditions);
-		
+		contents.add(scrollPane, BorderLayout.CENTER);
+		scrollPane.setPreferredSize(new Dimension(500, 300));
+		searchConditions.setPreferredSize(new Dimension(500, 40));
+		contents.add(navPanel, BorderLayout.PAGE_END);
 		
 	}
 
@@ -188,39 +169,12 @@ public class OpenContract extends SwingView {
         sorter.setRowFilter(rf);
     }
 	
-	/**
-	 * SearchButtonListener class implements action listener for
-	 * search button click. Filter text box and label are shown
-	 * and data querying event from AppController is fired. 
-	 * 
-	 * @author Bartosz Kratochwil (bartosz.kratochwil@hp.com)
-	 * @version 0.6
-	 * @see contract.controller.AppController
-	 *
-	 */
-	private class SearchButtonListener implements ActionListener{
-
-		/**
-		 * When button is clicked this event it fired.
-		 */
-		@Override
-		public void actionPerformed(ActionEvent ev) {
-			//change visibility of filter label and text box
-			filterLabel.setVisible(true);
-            filterText.setVisible(true);
-			//add searching and populating stuff through appController
-            //TO IMPLEMENT
-		}
-		
-	}
-	
 	private class OpenButtonListener implements ActionListener{
 
 		@Override
 		public void actionPerformed(ActionEvent ev) {
 			try{
 				int viewRow = tab.getSelectedRow();
-				int modelRow = tab.convertRowIndexToModel(viewRow);
 				System.out.println(tab.getValueAt(viewRow, 0));
 			} catch (IndexOutOfBoundsException e){
 				System.out.println("Nothing selected!");
