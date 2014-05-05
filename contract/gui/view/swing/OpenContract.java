@@ -22,6 +22,8 @@ import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
 import javax.swing.table.TableRowSorter;
 
+import com.ezware.oxbow.swingbits.table.filter.TableRowFilterSupport;
+
 import contract.gui.view.swing.table.DateRenderer;
 import contract.gui.view.swing.table.NewHireTableModel;
 
@@ -65,6 +67,7 @@ public class OpenContract extends SwingView {
 		//Change main container of this form to BORDER LAYOUT!!!!
 		
 		tab = new JTable(entryData);
+		TableRowFilterSupport.forTable(tab).apply();
 		tab.setDefaultRenderer(Date.class, new DateRenderer());
 		sorter = new TableRowSorter<NewHireTableModel>(entryData);
 		sorter.setComparator(0, intCompare);
