@@ -23,13 +23,13 @@ import javax.swing.JButton;
 import javax.swing.JCheckBox;
 import javax.swing.JComboBox;
 import javax.swing.JComponent;
-import javax.swing.JDialog;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JTabbedPane;
 import javax.swing.JTextField;
 import javax.swing.UIManager;
 
+import com.ezware.dialog.task.TaskDialogs;
 import com.michaelbaranov.microba.calendar.DatePicker;
 
 import contract.logging.ContractLogger;
@@ -93,6 +93,8 @@ public class NewHire extends SwingView {
 	private JComboBox<String> workContract = new JComboBox<String>();
 	private JLabel managerL = new JLabel("Line Manager");
 	private JTextField manager = new JTextField(15);
+	private JLabel managerPosL = new JLabel("Manager's Position Title");
+	private JTextField managerPos = new JTextField(30);
 	private JLabel manPhoneL = new JLabel("Manager's phone number");
 	private JTextField manPhone = new JTextField(15);
 	private JLabel effDateL = new JLabel("Start date:");
@@ -410,8 +412,16 @@ public class NewHire extends SwingView {
 		cn.insets = new Insets(2, 2, 2, 2);
 		cn.gridx = 3;
 		posDetails.add(manPhone, cn);
-		//Signatory name required
+		//Manager's position name 
 		cn.gridy = 5;
+		cn.gridx = 0;
+		posDetails.add(managerPosL, cn);
+		cn.gridx = 1;
+		cn.gridwidth = 2;
+		posDetails.add(managerPos, cn);
+		cn.gridwidth = 1;
+		//Signatory name required
+		cn.gridy = 6;
 		cn.gridx = 0;
 		posDetails.add(signatoryReqL, cn);
 		cn.gridx = 1;
@@ -441,7 +451,7 @@ public class NewHire extends SwingView {
 		signatoryName.setEnabled(false);
 		posDetails.add(signatoryName, cn);
 		//Start Date
-		cn.gridy = 6;
+		cn.gridy = 7;
 		cn.gridx = 0;
 		posDetails.add(effDateL, cn);
 		cn.gridx = 1;
@@ -467,7 +477,7 @@ public class NewHire extends SwingView {
 		posDetails.add(dateTBC, cn);
 		cn.insets = new Insets(2, 2, 2, 2);
 		//Hours Of Work
-		cn.gridy = 7;
+		cn.gridy = 8;
 		cn.gridx = 0;
 		posDetails.add(hoursWorkL, cn);
 		cn.gridx = 1;
@@ -478,7 +488,7 @@ public class NewHire extends SwingView {
 		posDetails.add(isCTS, cn);
 		cn.insets = new Insets(2, 2, 2, 2);
 		//Annual Pay
-		cn.gridy = 8;
+		cn.gridy = 9;
 		cn.gridx = 0;
 		posDetails.add(annPayL, cn);
 		cn.gridx = 1;
@@ -859,6 +869,7 @@ public class NewHire extends SwingView {
 		workContract.setSelectedIndex(0);
 		manager.setText("");
 		manPhone.setText("");
+		managerPos.setText("");
 		try {
 			effDate.setDate(null);
 		} catch (PropertyVetoException e) {
@@ -916,6 +927,7 @@ public class NewHire extends SwingView {
 	 */
 	@Override
 	public void extractDataFromModel() {
+		conID.setText(model.get("ID"));
 		eeid.setText(model.get("eeid"));
 		name.setText(model.get("forenames"));
 		lName.setText(model.get("surname"));
@@ -960,6 +972,7 @@ public class NewHire extends SwingView {
 		}
 		manager.setText(model.get("lm_name"));
 		manPhone.setText(model.get("lm_phone_no"));
+		managerPos.setText(model.get("lm_pos_title"));
 		if(Boolean.parseBoolean(model.get("signatory_name_req"))){
 			signatoryReq.setSelected(true);
 		} else {
@@ -1136,15 +1149,10 @@ public class NewHire extends SwingView {
 		public void actionPerformed(ActionEvent ev) {
 			if(ev.getSource() == submitBut){
 				if(!verifyForm()){
-					JDialog errDial = new JDialog(mainContainer, "Fields verification failed!", false);
-					JPanel contents = new JPanel();
-					JLabel errDetails = new JLabel("Test error message");
-					contents.add(errDetails);
-					errDial.setContentPane(contents);
-					errDial.setSize(300, 200);
-					errDial.setLocationRelativeTo(mainContainer);
-					errDial.setVisible(true);
-				} 
+					TaskDialogs.inform(mainContainer, "Warrning!", "Not all fields validated. Make sure that all highlighted fields are corrected.");
+				} else {
+					appController.run_newHire_contract_gen(Integer.parseInt(conID.getText()));
+				}
 			}
 		}
 		
@@ -1227,6 +1235,9 @@ public class NewHire extends SwingView {
 			if(!emptyVerifier.verify(manPhone)){
 				return false;
 			}
+			if(!emptyVerifier.verify(managerPos)){
+				return false;
+			}
 			if(!emptyVerifier.verify(addressLine1)){
 				return false;
 			}
@@ -1269,6 +1280,7 @@ public class NewHire extends SwingView {
 		hireModel.addField("non_negotiated", empGroup.getSelectedItem().toString());
 		hireModel.addField("lm_name", manager.getText());
 		hireModel.addField("lm_phone_no", manPhone.getText());
+		hireModel.addField("lm_pos_title", managerPos.getText());
 		hireModel.addField("start_date", dateFormat.format(effDate.getDate()));
 		hireModel.addField("contract_end_date", "");
 		hireModel.addField("hours_of_work", hoursWork.getText());

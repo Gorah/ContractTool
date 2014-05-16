@@ -148,7 +148,6 @@ public class AppController {
 		}
 	}
 	
-	
 	public void open_newHire_from_list(long id){
 		HireAbstractModel hireModel;
 		try {
@@ -163,6 +162,15 @@ public class AppController {
 		}
 		
 		
+	}
+	
+	public void run_newHire_contract_gen(int id){
+		try {
+			Runtime.getRuntime().exec("wscript \"" + System.getProperty("user.dir") + "\\src\\testrun.vbs\" " + id);
+		} catch (IOException e) {
+			System.out.println("File not found!");
+			e.printStackTrace();
+		}
 	}
 		
 	/**

@@ -87,6 +87,7 @@ public class DocxHireModel extends HireAbstractModel {
 							addField("addWageTypeAmount2", getSalary(cells.get(3).getText()));
 							break;
 					case 25: addField("lm_name", filterTrailingSpaces(cells.get(1).getText()));
+							addField("lm_pos_title", filterTrailingSpaces(cells.get(3).getText()));
 							break;
 					case 26: addField("lm_phone_no", filterTrailingSpaces(cells.get(1).getText()));
 							//Find if there's probation period

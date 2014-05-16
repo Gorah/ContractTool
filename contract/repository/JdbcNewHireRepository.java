@@ -34,7 +34,7 @@ public class JdbcNewHireRepository implements NewHire {
 		this.conn = dataSource.getConnection();
 		INSERT_EMPLOYEE = conn.prepareStatement("INSERT INTO Hires VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, "
 				+"?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, "
-				+"?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)", PreparedStatement.RETURN_GENERATED_KEYS);
+				+"?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)", PreparedStatement.RETURN_GENERATED_KEYS);
 		SELECT_EMPLOYEE = conn.prepareStatement("SELECT * FROM Hires WHERE ID = ?");
 		UPDATE_EMPLOYEE = conn.prepareStatement("UPDATE Hires SET contract_ref = ?, eeid = ?, surname = ?, "
 				+"forename = ?, address_line1 = ?, address_line2 = ?, city = ?, postal_code = ?, country = ?, "
@@ -48,7 +48,7 @@ public class JdbcNewHireRepository implements NewHire {
 				+"travel_supp_amount = ?, pence_per_mile = ?, relocation = ?, relocation_amount = ?, "
 				+"relocation_area = ?, personal_qualification = ?, mobile_phone = ?, professional_subs = ?, "
 				+"company_car = ?, sharps = ?, next_salary_review = ?, employee_group = ?, reason_for_contract = ?, "
-				+"location = ?, working_visa = ? WHERE ID = ?");
+				+"location = ?, working_visa = ?, line_manager_position = ? WHERE ID = ?");
 		LIST_NEW_HIRES = conn.prepareStatement("SELECT ID, contract_ref, eeid, surname, forename, position_title, "
 				+"contract_start_date FROM Hires");
 	}
@@ -274,6 +274,7 @@ public class JdbcNewHireRepository implements NewHire {
 			}
 			INSERT_EMPLOYEE.setString(52, hire.getDetail("location"));
 			INSERT_EMPLOYEE.setString(53, hire.getDetail("working_visa_paragraph"));
+			INSERT_EMPLOYEE.setString(54, hire.getDetail("lm_pos_title"));
 			
 			//Execute SQL query
 			INSERT_EMPLOYEE.executeUpdate();
@@ -318,6 +319,7 @@ public class JdbcNewHireRepository implements NewHire {
 				hireModel.addField("lm_name", result.getString("line_manager"));
 				hireModel.addField("lm_phone_no", result.getString("line_manager_phone"));
 				hireModel.addField("signatory_name_req", new Boolean(result.getBoolean("signatory_name_required")).toString());
+				hireModel.addField("lm_pos_title", result.getString("line_manager_position"));
 				hireModel.addField("signatory_name", result.getString("signatory_name"));
 				hireModel.addField("position_number", new Integer(result.getInt("position_number")).toString());
 				hireModel.addField("position_title", result.getString("position_title"));
@@ -617,7 +619,9 @@ public class JdbcNewHireRepository implements NewHire {
 			}
 			UPDATE_EMPLOYEE.setString(52, hire.getDetail("location"));
 			UPDATE_EMPLOYEE.setString(53, hire.getDetail("working_visa_paragraph"));
-			UPDATE_EMPLOYEE.setLong(54, Long.parseLong(hire.getDetail("ID")));
+			UPDATE_EMPLOYEE.setString(54, hire.getDetail("lm_pos_title"));
+			UPDATE_EMPLOYEE.setLong(55, Long.parseLong(hire.getDetail("ID")));
+			
 			if(UPDATE_EMPLOYEE.executeUpdate() == 0){
 				return false;
 			}
