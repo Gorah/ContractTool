@@ -155,6 +155,9 @@ public class NewHire extends SwingView {
 	private JCheckBox profSubs = new JCheckBox();
 	private JLabel workVisaL = new JLabel("Working Visa Required");
 	private JCheckBox workVisa = new JCheckBox();
+	private JLabel pyAreaL = new JLabel("Payroll Area");
+	private String[] areas = {"4W", "MO", "DE"};
+	private JComboBox<String> pyArea = new JComboBox<String>(areas); 
 	private InputVerifier pureTextVerifier = new NameVerifier();
 	private AmountVerifier amountVerifier = new AmountVerifier();
 	private NumericValueVerifier numVerifier = new NumericValueVerifier();
@@ -399,6 +402,11 @@ public class NewHire extends SwingView {
 		posDetails.add(empGroupL, cn);
 		cn.gridx = 1;
 		posDetails.add(empGroup, cn);
+		//Payroll Area
+		cn.gridx = 2;
+		posDetails.add(pyAreaL, cn);
+		cn.gridx = 3;
+		posDetails.add(pyArea, cn);
 		//Line Manager
 		cn.gridx = 0;
 		cn.gridy = 4;
@@ -950,6 +958,14 @@ public class NewHire extends SwingView {
 		location.setText(model.get("location"));
 		bu.setText(model.get("business_area"));
 		hoursWork.setText(model.get("hours_of_work"));
+		if(model.get("payroll_area").equals("4W")){
+			pyArea.setSelectedIndex(0);
+		} else if(model.get("payroll_area").equals("MO")) {
+			pyArea.setSelectedIndex(1);
+		} else {
+			pyArea.setSelectedIndex(2);
+		}
+		
 		
 		//Translate string value to integer index position for Combo Box
 		if(model.get("contract_type").equals("Permanent")){
@@ -1277,6 +1293,7 @@ public class NewHire extends SwingView {
 		hireModel.addField("business_area", bu.getText());
 		hireModel.addField("contract_type", conType.getSelectedItem().toString());
 		hireModel.addField("work_contract", workContract.getSelectedItem().toString());
+		hireModel.addField("payroll_area", pyArea.getItemAt(pyArea.getSelectedIndex()));
 		hireModel.addField("non_negotiated", empGroup.getSelectedItem().toString());
 		hireModel.addField("lm_name", manager.getText());
 		hireModel.addField("lm_phone_no", manPhone.getText());

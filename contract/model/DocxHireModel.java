@@ -80,6 +80,13 @@ public class DocxHireModel extends HireAbstractModel {
 					case 15: addField("country", filterTrailingSpaces(cells.get(3).getText()));
 							break;
 					case 20: addField("salary", getSalary(cells.get(3).getText()));
+							if(cells.get(1).getText().contains("Four Weekly")){
+								addField("payroll_area", "4W");
+							} else if(cells.get(1).getText().contains("Monthly")) {
+								addField("payroll_area", "MO");
+							} else {	
+								addField("payroll_area", "DE");
+							}
 							break;
 					case 23: addField("addWageType1", filterTrailingSpaces(cells.get(0).getText()));
 							addField("addWageTypeAmount1", getSalary(cells.get(1).getText()));
