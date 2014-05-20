@@ -157,7 +157,8 @@ public class NewHire extends SwingView {
 	private JCheckBox workVisa = new JCheckBox();
 	private JLabel pyAreaL = new JLabel("Payroll Area");
 	private String[] areas = {"4W", "MO", "DE"};
-	private JComboBox<String> pyArea = new JComboBox<String>(areas); 
+	private JComboBox<String> pyArea = new JComboBox<String>(areas);
+	private JCheckBox mop = new JCheckBox("MOP FSE");
 	private InputVerifier pureTextVerifier = new NameVerifier();
 	private AmountVerifier amountVerifier = new AmountVerifier();
 	private NumericValueVerifier numVerifier = new NumericValueVerifier();
@@ -495,6 +496,8 @@ public class NewHire extends SwingView {
 		cn.insets = new Insets(2, 8, 2, 2);
 		posDetails.add(isCTS, cn);
 		cn.insets = new Insets(2, 2, 2, 2);
+		cn.gridx = 3;
+		posDetails.add(mop, cn);
 		//Annual Pay
 		cn.gridy = 9;
 		cn.gridx = 0;
@@ -966,6 +969,12 @@ public class NewHire extends SwingView {
 			pyArea.setSelectedIndex(2);
 		}
 		
+		//translate value of MOP check box and set it to proper state
+		if(Boolean.parseBoolean(model.get("mop_fse"))){
+			mop.setSelected(true);
+		} else {
+			mop.setSelected(false);
+		}
 		
 		//Translate string value to integer index position for Combo Box
 		if(model.get("contract_type").equals("Permanent")){
@@ -1301,15 +1310,23 @@ public class NewHire extends SwingView {
 		hireModel.addField("start_date", dateFormat.format(effDate.getDate()));
 		hireModel.addField("contract_end_date", "");
 		hireModel.addField("hours_of_work", hoursWork.getText());
+		//translate state of date tbc checkbox
 		if(dateTBC.isSelected()){
 			hireModel.addField("date_tbc", "true");
 		} else {
 			hireModel.addField("date_tbc", "false");
 		}
+		//translate state of CTS checkbox
 		if(isCTS.isSelected()){
 			hireModel.addField("cts", "true");
 		} else {
 			hireModel.addField("cts", "false");
+		}
+		//translate state of MOP FSE checkbox
+		if(mop.isSelected()){
+			hireModel.addField("mop_fse", "true");
+		} else {
+			hireModel.addField("mop_fse", "false");
 		}
 		hireModel.addField("salary", annPay.getText());
 		if(shiftPay.isSelected()){
