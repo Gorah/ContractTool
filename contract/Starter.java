@@ -10,6 +10,7 @@ import javax.swing.UnsupportedLookAndFeelException;
 import com.microsoft.sqlserver.jdbc.SQLServerConnectionPoolDataSource;
 
 import contract.controller.AppController;
+import contract.gui.view.swing.LoginForm;
 import contract.gui.view.swing.Main;
 import contract.gui.view.swing.NewHire;
 import contract.gui.view.swing.OpenContract;
@@ -17,6 +18,7 @@ import contract.gui.view.swing.table.NewHireTableModel;
 import contract.logging.ContractLogger;
 import contract.model.Settings;
 import contract.repository.JDBCOptionsRepository;
+import contract.repository.JdbcLoginRepository;
 import contract.repository.JdbcNewHireRepository;
 
 public class Starter {
@@ -41,12 +43,15 @@ public class Starter {
 		try {
 			contract.repository.NewHire nhRepo = new JdbcNewHireRepository(dataSource);
 			tool = new ContractTool(new JDBCOptionsRepository(dataSource), 
-					nhRepo);
+					nhRepo, new JdbcLoginRepository(dataSource));
 			AppController app = new AppController(tool);
 			app.addViews(new Main(),
 						new OpenContract(new NewHireTableModel(nhRepo.list())),
 						new NewHire(tool.getComboOptions()));
-			app.init();
+			LoginForm login = new LoginForm(app);
+			app.setLoginForm(login);
+			login.showDialog();
+			//app.init();
 		} catch (SQLException e) {
 			logger.log(Level.SEVERE, "Cannot initialise program. " + e.getMessage());
 			System.exit(0);

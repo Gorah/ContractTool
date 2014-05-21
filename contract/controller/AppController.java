@@ -10,6 +10,7 @@ import org.apache.poi.openxml4j.exceptions.InvalidFormatException;
 import contract.ContractTool;
 import contract.gui.view.AbstractView;
 import contract.gui.view.AbstractView.Name;
+import contract.gui.view.swing.LoginForm;
 import contract.logging.ContractLogger;
 import contract.model.DocxHireModel;
 import contract.model.HireAbstractModel;
@@ -31,6 +32,7 @@ public class AppController {
 	
 	private List<AbstractView> views = new ArrayList<>();
 	private ContractTool contractTool;
+	private LoginForm loginForm;
 	
 	/**
 	 * Only constructor for the class.
@@ -73,6 +75,10 @@ public class AppController {
 	}
 	
 	
+	public void setLoginForm(LoginForm loginForm) {
+		this.loginForm = loginForm;
+	}
+
 	/**
 	 * Initialisation method for app. Fires rendering of main view.
 	 */
@@ -171,6 +177,20 @@ public class AppController {
 			System.out.println("File not found!");
 			e.printStackTrace();
 		}
+	}
+	
+	public boolean validate_login(String user, String password){
+		String result = this.contractTool.getLoginRepo().validate_user(user, password);
+		if(result.equals("success")){
+			init();
+		} else if (result.equals("Wrong user name or password!")) {
+			//give warning about wrong name or pass
+			loginForm.showDialog();
+		} else {
+			//give warning about user being disabled
+			loginForm.showDialog();
+		}
+		return true;
 	}
 		
 	/**
