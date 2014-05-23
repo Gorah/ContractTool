@@ -9,6 +9,8 @@ import javax.swing.JPanel;
 import javax.swing.JPasswordField;
 import javax.swing.JTextField;
 
+import com.ezware.dialog.task.TaskDialogs;
+
 import contract.controller.AppController;
 
 public class LoginForm {
@@ -51,6 +53,14 @@ public class LoginForm {
         	app.exit();
         }
     }
+	
+	public void showWrongCreds(){
+		TaskDialogs.error(mainContainer, "Error", "Wrong username or password!");
+	}
+	
+	public void showUserDisabled(){
+		TaskDialogs.error(mainContainer, "Error", "User account disabled! Please contact system admin!");
+	}
 	
 
 }

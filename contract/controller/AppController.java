@@ -185,9 +185,11 @@ public class AppController {
 			init();
 		} else if (result.equals("Wrong user name or password!")) {
 			//give warning about wrong name or pass
+			loginForm.showWrongCreds();
 			loginForm.showDialog();
 		} else {
 			//give warning about user being disabled
+			loginForm.showUserDisabled();
 			loginForm.showDialog();
 		}
 		return true;
