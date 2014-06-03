@@ -7,14 +7,20 @@ import java.util.logging.Logger;
 
 import org.apache.poi.openxml4j.exceptions.InvalidFormatException;
 
+import word._Application;
+
+import com4j.Variant;
+
 import contract.ContractTool;
 import contract.gui.view.AbstractView;
 import contract.gui.view.AbstractView.Name;
 import contract.gui.view.swing.LoginForm;
+import contract.gui.view.swing.NewHire;
 import contract.logging.ContractLogger;
 import contract.model.DocxHireModel;
 import contract.model.HireAbstractModel;
 import contract.model.HireModel;
+import contract.model.User;
 import contract.repository.EntityAlreadyExistsException;
 import contract.repository.EntityNotFoundException;
 
@@ -74,7 +80,10 @@ public class AppController {
 		throw new IllegalStateException("View " + name + " not found");
 	}
 	
-	
+	/**
+	 * Setter for login form
+	 * @param LoginForm loginForm
+	 */
 	public void setLoginForm(LoginForm loginForm) {
 		this.loginForm = loginForm;
 	}
@@ -98,7 +107,9 @@ public class AppController {
 	 * Method fetching and rendering New Contract view.
 	 */
 	public void showNewHire(){
-		getView(Name.NEW_HIRE).render();
+		NewHire nhf = (NewHire)getView(Name.NEW_HIRE);
+		nhf.render();
+		nhf.genRefID();
 	}
 	
 	/**
@@ -154,9 +165,14 @@ public class AppController {
 		}
 	}
 	
+	/**
+	 * This method opens hire data in form
+	 * @param long id of the record
+	 */
 	public void open_newHire_from_list(long id){
 		HireAbstractModel hireModel;
 		try {
+			//build a model from DB data
 			hireModel = this.contractTool.getNewHireRepository().get(id);
 			getView(Name.NEW_HIRE).setModel(hireModel.getHireDetails());
 			//populate form fields taking data from model
@@ -170,18 +186,41 @@ public class AppController {
 		
 	}
 	
+	/**
+	 * This method opens MS Word template and runs macro to create and save document.
+	 * 
+	 * @param int id - id number of DB entry for which contract is being made
+	 */
 	public void run_newHire_contract_gen(int id){
-		try {
-			Runtime.getRuntime().exec("wscript \"" + System.getProperty("user.dir") + "\\src\\testrun.vbs\" " + id);
-		} catch (IOException e) {
-			System.out.println("File not found!");
-			e.printStackTrace();
-		}
+		_Application app = word.ClassFactory.createApplication();
+    	app.documents().open(System.getProperty("user.dir") + "\\src\\template.docm", Variant.getMissing(), Variant.getMissing(), Variant.getMissing(), Variant.getMissing(), 
+    			Variant.getMissing(), Variant.getMissing(), Variant.getMissing(), Variant.getMissing(), Variant.getMissing(), Variant.getMissing(), 
+    			Variant.getMissing(), Variant.getMissing(), Variant.getMissing(), Variant.getMissing(), Variant.getMissing());
+    	app.visible(true);
+    	app.run("run", id, Variant.getMissing(), Variant.getMissing(), Variant.getMissing(), Variant.getMissing(), 
+    			Variant.getMissing(), Variant.getMissing(), Variant.getMissing(), Variant.getMissing(), Variant.getMissing(), 
+    			Variant.getMissing(), Variant.getMissing(), Variant.getMissing(), Variant.getMissing(), Variant.getMissing(), 
+    			Variant.getMissing(), Variant.getMissing(), Variant.getMissing(), Variant.getMissing(), Variant.getMissing(), 
+    			Variant.getMissing(), Variant.getMissing(), Variant.getMissing(), Variant.getMissing(), Variant.getMissing(), 
+    			Variant.getMissing(), Variant.getMissing(), Variant.getMissing(), Variant.getMissing(), Variant.getMissing());
+    	app.documents().close(Variant.getMissing(), Variant.getMissing(), Variant.getMissing());
+    	app.quit(Variant.getMissing(), Variant.getMissing(), Variant.getMissing());
 	}
 	
-	public boolean validate_login(String user, String password){
+	/**
+	 * This method is used to verify user credentials and logging in.
+	 * 
+	 * @param String user
+	 * @param String password
+	 */
+	public void validate_login(String user, String password){
+		//validate user credentials
 		String result = this.contractTool.getLoginRepo().validate_user(user, password);
+		
+		//depending on result of validation
 		if(result.equals("success")){
+			//log in and show main window
+			this.contractTool.setUsr(new User(user));
 			init();
 		} else if (result.equals("Wrong user name or password!")) {
 			//give warning about wrong name or pass
@@ -192,9 +231,17 @@ public class AppController {
 			loginForm.showUserDisabled();
 			loginForm.showDialog();
 		}
-		return true;
 	}
-		
+	
+	
+	/**
+	 * Contract Tool object getter	
+	 * @return Contract Tool object
+	 */
+	public ContractTool getContractTool() {
+		return contractTool;
+	}
+
 	/**
 	 * Method closing app.
 	 */

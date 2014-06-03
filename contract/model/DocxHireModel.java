@@ -63,11 +63,7 @@ public class DocxHireModel extends HireAbstractModel {
 							addField("contract_end_date", filterTrailingSpaces(cells.get(3).getText()));
 							break;
 					case 6: 
-						if(filterTrailingSpaces(cells.get(1).getText()).isEmpty()){ 
-							addField("job_grade", "false");
-						} else {	
-							addField("job_grade", "true");
-						}
+							addField("job_grade", filterTrailingSpaces(cells.get(1).getText()));
 							break;
 					case 7: addField("mop_fse", filterTrailingSpaces(cells.get(1).getText()));
 					break;		

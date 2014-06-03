@@ -47,7 +47,7 @@ public class NewHire extends SwingView {
 	private ComboOptions opts;
 	
 	private JLabel refL = new JLabel("Contract Reference");
-	private JTextField ref = new JTextField(10);
+	private JTextField ref = new JTextField(14);
 	private JLabel refCredsL = new JLabel("HRBP credentials");
 	private JTextField refCreds = new JTextField("JB", 5);
 	private JPanel nhPanel = new JPanel();
@@ -264,7 +264,6 @@ public class NewHire extends SwingView {
 		contractDetails.add(refL, cn);
 		cn.gridx = 1;
 		contractDetails.add(ref, cn);
-		ref.setEnabled(false);
 		//HRBP credentials for reference
 		cn.gridy = 1;
 		cn.gridx = 2;
@@ -863,6 +862,7 @@ public class NewHire extends SwingView {
 	
 	private void clear(){
 		conID.setText("");
+		ref.setText("");
 		eeid.setText("");
 		name.setText("");
 		lName.setText("");
@@ -939,6 +939,7 @@ public class NewHire extends SwingView {
 	@Override
 	public void extractDataFromModel() {
 		conID.setText(model.get("ID"));
+		ref.setText(model.get("contract_ref"));
 		eeid.setText(model.get("eeid"));
 		name.setText(model.get("forenames"));
 		lName.setText(model.get("surname"));
@@ -1275,6 +1276,13 @@ public class NewHire extends SwingView {
 			return true;
 		}
 		
+	}
+	
+	/**
+	 * This function generates reference ID for a new contract
+	 */
+	public void genRefID(){
+		ref.setText(appController.getContractTool().getUsr().getInitials() + "\\" + refCreds.getText() + "\\" + new SimpleDateFormat("ddMMyyH").format(new Date()));
 	}
 	
 	/**

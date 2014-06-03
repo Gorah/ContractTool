@@ -51,6 +51,7 @@ public class Starter {
 			LoginForm login = new LoginForm(app);
 			app.setLoginForm(login);
 			login.showDialog();
+			
 			//app.init();
 		} catch (SQLException e) {
 			logger.log(Level.SEVERE, "Cannot initialise program. " + e.getMessage());

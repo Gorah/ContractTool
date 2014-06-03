@@ -106,6 +106,21 @@ public class Main extends SwingView {
 	}
 	
 	/**
+	 * Method for building "File" menu in NewHire form
+	 */
+	public void buildMenuForNewHireForm(){
+		menuBar.remove(menu);
+		menu.removeAll();
+		menu.add(newContract);
+		menu.add(openContract);
+		menu.addSeparator();
+		menu.add(saveNHData);
+		menu.addSeparator();
+		menu.add(exitProg);
+		menuBar.add(menu);
+	}
+	
+	/**
 	 * Implementation of Action Listener for menu items on the form.
 	 * Each action fires respective appController event and performs 
 	 * visibility changes on some form elements.
@@ -138,14 +153,7 @@ public class Main extends SwingView {
 				loadFile.setText("Load File");
 				loadFile.addActionListener(this);
 				edit.add(loadFile);
-				menuBar.remove(menu);
-				menu.remove(saveJCData);
-				menu.remove(exitProg);
-				menu.add(saveNHData);
-				menu.addSeparator();
-				menu.add(exitProg);
-				menuBar.add(menu);
-				menuBar.add(edit);
+				buildMenuForNewHireForm();
 				mainContainer.setJMenuBar(menuBar);
 				mainContainer.setSize(800, 700);
 				
@@ -171,14 +179,7 @@ public class Main extends SwingView {
                 fc.setSelectedFile(null);
 			} else if (e.getSource() == openContract){
 				//Trigger for open contract menu option
-				menuBar.remove(menu);
-				menu.remove(saveNHData);
-				menu.remove(exitProg);
-				if(menu.getComponentCount() == 3){
-					menu.remove(3);
-				}
-				menu.add(exitProg);
-				menuBar.add(menu);
+				buildMenuForNewHireForm();
 				menuBar.remove(edit);
 				//fires rendering of contract search form.
 				appController.showOpenContract();
