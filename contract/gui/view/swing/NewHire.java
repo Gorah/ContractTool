@@ -28,6 +28,8 @@ import javax.swing.JPanel;
 import javax.swing.JTabbedPane;
 import javax.swing.JTextField;
 import javax.swing.UIManager;
+import javax.swing.event.DocumentEvent;
+import javax.swing.event.DocumentListener;
 
 import com.ezware.dialog.task.TaskDialogs;
 import com.michaelbaranov.microba.calendar.DatePicker;
@@ -265,6 +267,7 @@ public class NewHire extends SwingView {
 		cn.gridx = 1;
 		contractDetails.add(ref, cn);
 		//HRBP credentials for reference
+		refCreds.getDocument().addDocumentListener(new RefCredsListener());
 		cn.gridy = 1;
 		cn.gridx = 2;
 		contractDetails.add(refCredsL, cn);
@@ -1158,6 +1161,50 @@ public class NewHire extends SwingView {
 
 	}
 	
+	/**
+	 * Listener class for Reference Credentials text field. It handles updating contract reference
+	 * when Initials are changes.
+	 * 
+	 * @author Bartosz Kratochwil (bartosz.krtochwil@hp.com)
+	 *
+	 * @version 0.1
+	 *
+	 */
+	class RefCredsListener implements DocumentListener{
+
+		/**
+		 * This method updates contract reference field with new value of initials.
+		 */
+		@Override
+		public void changedUpdate(DocumentEvent arg0) {
+			ref.setText(appController.getContractTool().getUsr().getInitials() + "\\" + refCreds.getText() + "\\" + new SimpleDateFormat("ddMMyyH").format(new Date()));
+			
+		}
+
+		/**
+		 * This method updates contract reference field with new value of initials.
+		 */
+		@Override
+		public void insertUpdate(DocumentEvent arg0) {
+			ref.setText(appController.getContractTool().getUsr().getInitials() + "\\" + refCreds.getText() + "\\" + new SimpleDateFormat("ddMMyyH").format(new Date()));
+			
+		}
+
+		/**
+		 * This method updates contract reference field with new value of initials.
+		 * If field is empty after deletion, a default value of "JB" is used instead.
+		 */
+		@Override
+		public void removeUpdate(DocumentEvent arg0) {
+			if(!refCreds.getText().isEmpty()){
+				ref.setText(appController.getContractTool().getUsr().getInitials() + "\\" + refCreds.getText() + "\\" + new SimpleDateFormat("ddMMyyH").format(new Date()));
+			} else {
+				ref.setText(appController.getContractTool().getUsr().getInitials() + "\\JB\\" + new SimpleDateFormat("ddMMyyH").format(new Date()));
+			}
+		}
+		
+	}
+	
 	
 	/**
 	 * Event listener class for submit button
@@ -1459,6 +1506,13 @@ public class NewHire extends SwingView {
 		return new HireModel(this.model);
 	}
 	
+	/**
+	 * This method returns reference ID of contract
+	 * @return String 
+	 */
+	public String getRefID(){
+		return ref.getText();
+	}
 	
 	/**
 	 * Verifier class for pure text fields like name, surname, city etc.

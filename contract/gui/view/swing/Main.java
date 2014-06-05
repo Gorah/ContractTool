@@ -121,6 +121,16 @@ public class Main extends SwingView {
 	}
 	
 	/**
+	 *  Method for building "Edit" menu in NewHire form
+	 */
+	public void buildEditMenuForNewHire(){
+		menuBar.remove(edit);
+		edit.removeAll();
+		edit.add(loadFile);
+		menuBar.add(edit);
+	}
+	
+	/**
 	 * Implementation of Action Listener for menu items on the form.
 	 * Each action fires respective appController event and performs 
 	 * visibility changes on some form elements.
@@ -152,11 +162,10 @@ public class Main extends SwingView {
 				edit.setText("Edit");
 				loadFile.setText("Load File");
 				loadFile.addActionListener(this);
-				edit.add(loadFile);
 				buildMenuForNewHireForm();
+				buildEditMenuForNewHire();
 				mainContainer.setJMenuBar(menuBar);
 				mainContainer.setSize(800, 700);
-				
 			} else if (e.getSource() == loadFile){
 				//trigger for load file menu option
 				//if no file chooser is setup, a new instance is created

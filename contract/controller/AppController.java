@@ -5,16 +5,19 @@ import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import javax.swing.JFrame;
+
 import org.apache.poi.openxml4j.exceptions.InvalidFormatException;
 
+import com.ezware.dialog.task.TaskDialogs;
+
 import word._Application;
-
 import com4j.Variant;
-
 import contract.ContractTool;
 import contract.gui.view.AbstractView;
 import contract.gui.view.AbstractView.Name;
 import contract.gui.view.swing.LoginForm;
+import contract.gui.view.swing.Main;
 import contract.gui.view.swing.NewHire;
 import contract.logging.ContractLogger;
 import contract.model.DocxHireModel;
@@ -116,6 +119,7 @@ public class AppController {
 	 * Method fetching and rendering Open Contract view.
 	 */
 	public void showOpenContract(){
+		
 		getView(Name.OPEN_CONTRACT).render();
 	}
 	
@@ -133,6 +137,8 @@ public class AppController {
 				DocxHireModel nhData = new DocxHireModel(fileName);
 				//read file data and load it to model
 				nhData.readDataFromFile();
+				NewHire nh = (NewHire) getView(Name.NEW_HIRE);
+				nhData.addField("contract_ref", nh.getRefID());
 				//assign model to the form
 				getView(Name.NEW_HIRE).setModel(nhData.getHireDetails());
 				//populate form fields taking data from model
@@ -174,6 +180,9 @@ public class AppController {
 		try {
 			//build a model from DB data
 			hireModel = this.contractTool.getNewHireRepository().get(id);
+			Main mainvw = (Main) getView(Name.MAIN);
+			mainvw.buildMenuForNewHireForm();
+			mainvw.buildEditMenuForNewHire();
 			getView(Name.NEW_HIRE).setModel(hireModel.getHireDetails());
 			//populate form fields taking data from model
 			getView(Name.NEW_HIRE).render();
@@ -192,19 +201,25 @@ public class AppController {
 	 * @param int id - id number of DB entry for which contract is being made
 	 */
 	public void run_newHire_contract_gen(int id){
-		_Application app = word.ClassFactory.createApplication();
-    	app.documents().open(System.getProperty("user.dir") + "\\src\\template.docm", Variant.getMissing(), Variant.getMissing(), Variant.getMissing(), Variant.getMissing(), 
-    			Variant.getMissing(), Variant.getMissing(), Variant.getMissing(), Variant.getMissing(), Variant.getMissing(), Variant.getMissing(), 
-    			Variant.getMissing(), Variant.getMissing(), Variant.getMissing(), Variant.getMissing(), Variant.getMissing());
-    	app.visible(true);
-    	app.run("run", id, Variant.getMissing(), Variant.getMissing(), Variant.getMissing(), Variant.getMissing(), 
-    			Variant.getMissing(), Variant.getMissing(), Variant.getMissing(), Variant.getMissing(), Variant.getMissing(), 
-    			Variant.getMissing(), Variant.getMissing(), Variant.getMissing(), Variant.getMissing(), Variant.getMissing(), 
-    			Variant.getMissing(), Variant.getMissing(), Variant.getMissing(), Variant.getMissing(), Variant.getMissing(), 
-    			Variant.getMissing(), Variant.getMissing(), Variant.getMissing(), Variant.getMissing(), Variant.getMissing(), 
-    			Variant.getMissing(), Variant.getMissing(), Variant.getMissing(), Variant.getMissing(), Variant.getMissing());
-    	app.documents().close(Variant.getMissing(), Variant.getMissing(), Variant.getMissing());
-    	app.quit(Variant.getMissing(), Variant.getMissing(), Variant.getMissing());
+		try {
+			_Application app = word.ClassFactory.createApplication();
+			
+	    	app.documents().open(System.getProperty("user.dir") + "\\src\\template.docm", Variant.getMissing(), Variant.getMissing(), Variant.getMissing(), Variant.getMissing(), 
+	    			Variant.getMissing(), Variant.getMissing(), Variant.getMissing(), Variant.getMissing(), Variant.getMissing(), Variant.getMissing(), 
+	    			Variant.getMissing(), Variant.getMissing(), Variant.getMissing(), Variant.getMissing(), Variant.getMissing());
+	    	app.visible(true);
+	    	app.run("run", id, Variant.getMissing(), Variant.getMissing(), Variant.getMissing(), Variant.getMissing(), 
+	    			Variant.getMissing(), Variant.getMissing(), Variant.getMissing(), Variant.getMissing(), Variant.getMissing(), 
+	    			Variant.getMissing(), Variant.getMissing(), Variant.getMissing(), Variant.getMissing(), Variant.getMissing(), 
+	    			Variant.getMissing(), Variant.getMissing(), Variant.getMissing(), Variant.getMissing(), Variant.getMissing(), 
+	    			Variant.getMissing(), Variant.getMissing(), Variant.getMissing(), Variant.getMissing(), Variant.getMissing(), 
+	    			Variant.getMissing(), Variant.getMissing(), Variant.getMissing(), Variant.getMissing(), Variant.getMissing());
+	    	app.documents().close(Variant.getMissing(), Variant.getMissing(), Variant.getMissing());
+	    	app.quit(Variant.getMissing(), Variant.getMissing(), Variant.getMissing());
+		} catch (Exception | Error e){
+			System.out.println(e.getMessage());
+			TaskDialogs.error(new JFrame(), "Error", e.getMessage());
+		}
 	}
 	
 	/**
