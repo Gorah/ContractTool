@@ -30,11 +30,13 @@ public class JDBCOptionsRepository implements ComboOptions {
 	private PreparedStatement COUNTRY_OPTIONS;
 	private PreparedStatement COMPANY_CAR_OPTIONS;
 	private PreparedStatement EE_GROUPS;
+	private PreparedStatement WORK_PATTERNS_OPTIONS;
 	private ComboItem[] work_contracts;
 	private ComboItem[] contract_types;
 	private ComboItem[] countries;
 	private ComboItem[] car_options;
 	private ComboItem[] ee_groups;
+	private ComboItem[] work_patterns;
 	private static final Logger logger = new ContractLogger(JdbcNewHireRepository.class.getName()).getLogger();
 
 	public JDBCOptionsRepository(DataSource dataSource) throws SQLException {
@@ -44,11 +46,13 @@ public class JDBCOptionsRepository implements ComboOptions {
 		COUNTRY_OPTIONS = conn.prepareStatement("SELECT * FROM countries ORDER BY ID ASC");
 		COMPANY_CAR_OPTIONS = conn.prepareStatement("SELECT * FROM company_car ORDER BY ID ASC");
 		EE_GROUPS = conn.prepareStatement("SELECT * FROM employee_group ORDER BY ID ASC");
+		WORK_PATTERNS_OPTIONS = conn.prepareStatement("SELECT * FROM work_patterns ORDER BY ID ASC");
 		setWorkContractItems();
 		setContractTypeItems();
 		setCountryItems();
 		setCarItems();
 		setEEGroups();
+		setWorkPatterns();
 	}
 	
 	
@@ -80,6 +84,37 @@ public class JDBCOptionsRepository implements ComboOptions {
 		} 
 		
 		this.work_contracts = comboItems;
+	}
+	
+	
+	/**
+	 * This method assigns to a field an array of ComboItem objects built from DB data, representing 
+	 * work patterns options.
+	 * 
+	 */
+	public void setWorkPatterns(){
+		ComboItem[] comboItems;
+		//array list is used as interim solution due to the fact that regular arrays size is immutable
+		ArrayList<ComboItem> itemList = new ArrayList<ComboItem>();
+		
+		try {
+			//Query database and populate array list with values. 
+			ResultSet result = WORK_PATTERNS_OPTIONS.executeQuery();
+			while(result.next()){
+				itemList.add(new ComboItem(result.getInt(1), result.getString(2)));
+			}
+			
+			//Initialise new array with needed size
+			comboItems = new ComboItem[itemList.size()];
+			//convert arraylist object into array
+			comboItems = itemList.toArray(comboItems);
+		} catch (SQLException e) {
+			//initialise empty array to be returned
+			comboItems = new ComboItem[0];
+			logger.log(Level.SEVERE, e.getMessage());
+		} 
+		
+		this.work_patterns = comboItems;
 	}
 	
 	/**
@@ -208,6 +243,16 @@ public class JDBCOptionsRepository implements ComboOptions {
 	 */
 	public ComboItem[] getWork_contracts() {
 		return work_contracts;
+	}
+	
+	
+	/**
+	 * Getter for work patterns
+	 * 
+	 * @return ComboItem[]
+	 */
+	public ComboItem[] getWork_patterns() {
+		return work_patterns;
 	}
 
 	
