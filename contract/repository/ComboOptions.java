@@ -10,6 +10,7 @@ import contract.model.ComboItem;
  */
 public interface ComboOptions {
 
+	ComboItem[] getWork_patterns();
 	ComboItem[] getWork_contracts();
 	ComboItem[] getContract_types();
 	ComboItem[] getCountries();
