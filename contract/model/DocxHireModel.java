@@ -5,6 +5,8 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.List;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import org.apache.poi.openxml4j.exceptions.InvalidFormatException;
 import org.apache.poi.openxml4j.opc.OPCPackage;
@@ -114,7 +116,8 @@ public class DocxHireModel extends HireAbstractModel {
 							} else {
 								addField("competition_compliance", "false");
 							}
-							addField("duration_of_probation", filterTrailingSpaces(cells.get(3).getText()));
+							
+							findProbationDuration(filterTrailingSpaces(cells.get(3).getText()));
 							break;
 					case 28: 
 							//Find in there's a sign on bonus
@@ -196,6 +199,23 @@ public class DocxHireModel extends HireAbstractModel {
 			}
 		}
 
+	}
+	
+	/**
+	 * This method is parsing duration of probation input and cuts month value out of it, adding it to model.
+	 * If it's empty, or no months are found, adds empty string to model.
+	 * 
+	 * @param String input
+	 */
+	private void findProbationDuration(String input){
+		Pattern pat = Pattern.compile("\\d{1,}");
+		Matcher match = pat.matcher(input);
+		
+		if(match.find()){
+			addField("duration_of_probation", match.group(0));
+		} else {
+			addField("duration_of_probation", "");
+		}
 	}
 }
 ;

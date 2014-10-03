@@ -10,6 +10,8 @@ import javax.swing.JMenu;
 import javax.swing.JMenuBar;
 import javax.swing.JMenuItem;
 
+import com.ezware.dialog.task.TaskDialogs;
+
 import contract.gui.view.swing.filters.DocumentFilter;
 
 /**
@@ -198,6 +200,14 @@ public class Main extends SwingView {
 			}
 		}
 		
+	}
+	
+	public void showErrorMessage(String msg){
+		TaskDialogs.error(mainContainer, "Error", "Wrong username or password!");
+	}
+	
+	public void showInfoMessage(String msg){
+		TaskDialogs.inform(mainContainer, msg, "");
 	}
 
 	@Override

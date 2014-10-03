@@ -1010,18 +1010,26 @@ public class NewHire extends SwingView {
 		if(model.get("signatory_name") != null && !model.get("signatory_name").equals("")){
 			signatoryName.setText(model.get("signatory_name"));
 		}
-		try {
-			Date sDate = new SimpleDateFormat("dd-MM-yyyy").parse(model.get("start_date"));
-			effDate.setDate(sDate);
-			dateTBC.setSelected(false);
-		} catch (NoSuchElementException | PropertyVetoException e) {
-			System.out.println("Date conversion failed");
-			if(model.get("start_date").equals("")){
-				dateTBC.setSelected(true);
+		if(model.get("start_date").equals("1-1-1901")){
+			dateTBC.setSelected(true);
+			effDate.setEnabled(false);
+		} else {
+			try {
+				Date sDate = new SimpleDateFormat("dd-MM-yyyy").parse(model.get("start_date"));
+				effDate.setDate(sDate);
+				effDate.setEnabled(true);
+				dateTBC.setSelected(false);
+			} catch (NoSuchElementException | PropertyVetoException e) {
+				System.out.println("Date conversion failed");
+				if(model.get("start_date").equals("")){
+					dateTBC.setSelected(true);
+					effDate.setEnabled(false);
+				}
+			} catch (ParseException e1) {
+				System.out.println("date parse error");		
 			}
-		} catch (ParseException e1) {
-			System.out.println("date parse error");		
 		}
+		
 		
 		annPay.setText(model.get("salary"));
 		ggs.setText(model.get("job_grade"));
@@ -1362,14 +1370,21 @@ public class NewHire extends SwingView {
 		hireModel.addField("lm_name", manager.getText());
 		hireModel.addField("lm_phone_no", manPhone.getText());
 		hireModel.addField("lm_pos_title", managerPos.getText());
-		hireModel.addField("start_date", dateFormat.format(effDate.getDate()));
 		hireModel.addField("contract_end_date", "");
 		hireModel.addField("hours_of_work", hoursWork.getText());
 		//translate state of date tbc checkbox
+		Calendar cal = Calendar.getInstance();
 		if(dateTBC.isSelected()){
 			hireModel.addField("date_tbc", "true");
+			hireModel.addField("start_date", null);
+			cal.add(Calendar.YEAR, 1);
+			hireModel.addField("next_salary_review", ""+cal.get(Calendar.YEAR) + "-04-01");
 		} else {
 			hireModel.addField("date_tbc", "false");
+			hireModel.addField("start_date", dateFormat.format(effDate.getDate()));
+			cal.setTime(effDate.getDate());
+			cal.add(Calendar.YEAR, 1);
+			hireModel.addField("next_salary_review", ""+cal.get(Calendar.YEAR) + "-04-01");
 		}
 		//translate state of CTS checkbox
 		if(isCTS.isSelected()){
@@ -1479,10 +1494,6 @@ public class NewHire extends SwingView {
 		}
 		
 		hireModel.addField("mcbc_sharps", "");
-		Calendar cal = Calendar.getInstance();
-		cal.setTime(effDate.getDate());
-		cal.add(Calendar.YEAR, 1);
-		hireModel.addField("next_salary_review", ""+cal.get(Calendar.YEAR) + "-04-01");
 		hireModel.addField("reason_for_contract", "");
 		//Add newly populated model map to form.
 		this.model = hireModel.getHireDetails();
