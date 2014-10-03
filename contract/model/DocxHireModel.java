@@ -51,6 +51,7 @@ public class DocxHireModel extends HireAbstractModel {
 				addField("travel_supplement_duration", "");
 				addField("pence_per_mile", "");
 				addField("personal_qualification", "");
+				addField("work_pattern", "");
 				
 				//add data from document, basing on which row we're in now.
 				switch(rowCount){

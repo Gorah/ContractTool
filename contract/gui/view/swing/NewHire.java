@@ -1060,10 +1060,17 @@ public class NewHire extends SwingView {
 				System.out.println("date parse error");		
 			}
 		}
-		
-		
 		annPay.setText(model.get("salary"));
 		ggs.setText(model.get("job_grade"));
+		if(model.get("work_pattern") == ""){
+			workPatterns.setSelectedIndex(0);
+		} else if (model.get("work_pattern") == "8 hour"){
+			workPatterns.setSelectedIndex(1);
+		} else if (model.get("work_pattern") == "12 hour"){
+			workPatterns.setSelectedIndex(2);
+		} else {
+			workPatterns.setSelectedIndex(3);
+		}
 		//Relocation fields group
 		if(Boolean.parseBoolean(model.get("relocation"))){
 			relocation.setSelected(true);
@@ -1430,6 +1437,8 @@ public class NewHire extends SwingView {
 			hireModel.addField("mop_fse", "false");
 		}
 		hireModel.addField("salary", annPay.getText());
+		hireModel.addField("work_pattern", workPatterns.getSelectedItem().toString());
+		
 		if(shiftPay.isSelected()){
 			hireModel.addField("addWageType1", "shift pay");
 			hireModel.addField("addWageTypeAmount1", shiftPayVal.getText());
