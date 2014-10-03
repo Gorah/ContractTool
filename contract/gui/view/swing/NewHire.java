@@ -166,6 +166,8 @@ public class NewHire extends SwingView {
 	private NumericValueVerifier numVerifier = new NumericValueVerifier();
 	private EmptyVerifier emptyVerifier = new EmptyVerifier();
 	private SubmitEventListener subListener = new SubmitEventListener();
+	private JLabel workPatternsL = new JLabel("Work Pattern:");
+	private JComboBox<String> workPatterns = new JComboBox<String>();
 
 	
 	public NewHire(ComboOptions opts) {
@@ -197,6 +199,11 @@ public class NewHire extends SwingView {
 		//Employee Group
 		for(ComboItem item : opts.getEe_groups()){
 			empGroup.addItem(item.toString());
+		}
+		
+		//Work Pattern
+		for(ComboItem item: opts.getWork_patterns()){
+			workPatterns.addItem(item.toString());
 		}
 		
 		//add validation to fields
@@ -404,6 +411,22 @@ public class NewHire extends SwingView {
 		cn.gridy = 3;
 		posDetails.add(empGroupL, cn);
 		cn.gridx = 1;
+		//add action listener to handle showing or hiding work pattern
+		empGroup.addActionListener(new ActionListener(){
+
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				if(empGroup.getSelectedIndex() == 1){
+					workPatternsL.setVisible(true);
+					workPatterns.setVisible(true);
+				} else {
+					workPatternsL.setVisible(false);
+					workPatterns.setVisible(false);
+				}
+				
+			}
+			
+		});
 		posDetails.add(empGroup, cn);
 		//Payroll Area
 		cn.gridx = 2;
@@ -514,6 +537,14 @@ public class NewHire extends SwingView {
 		cn.gridx = 3;
 		shiftVal.setEnabled(false);
 		posDetails.add(ggs, cn);
+		//work patterns
+		cn.gridy = 10;
+		cn.gridx = 0;
+		workPatternsL.setVisible(false);
+		workPatterns.setVisible(false);
+		posDetails.add(workPatternsL, cn);
+		cn.gridx = 1;
+		posDetails.add(workPatterns, cn);
 
 	
 		

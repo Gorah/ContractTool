@@ -167,7 +167,7 @@ public class Main extends SwingView {
 				buildMenuForNewHireForm();
 				buildEditMenuForNewHire();
 				mainContainer.setJMenuBar(menuBar);
-				mainContainer.setSize(800, 700);
+				mainContainer.setSize(800, 750);
 			} else if (e.getSource() == loadFile){
 				//trigger for load file menu option
 				//if no file chooser is setup, a new instance is created
