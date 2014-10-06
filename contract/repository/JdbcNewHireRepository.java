@@ -34,7 +34,7 @@ public class JdbcNewHireRepository implements NewHire {
 		this.conn = dataSource.getConnection();
 		INSERT_EMPLOYEE = conn.prepareStatement("INSERT INTO Hires VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, "
 				+"?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, "
-				+"?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)", PreparedStatement.RETURN_GENERATED_KEYS);
+				+"?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)", PreparedStatement.RETURN_GENERATED_KEYS);
 		SELECT_EMPLOYEE = conn.prepareStatement("SELECT * FROM Hires WHERE ID = ?");
 		UPDATE_EMPLOYEE = conn.prepareStatement("UPDATE Hires SET contract_ref = ?, eeid = ?, surname = ?, "
 				+"forename = ?, address_line1 = ?, address_line2 = ?, city = ?, postal_code = ?, country = ?, "
@@ -48,11 +48,13 @@ public class JdbcNewHireRepository implements NewHire {
 				+"travel_supp_amount = ?, pence_per_mile = ?, relocation = ?, relocation_amount = ?, "
 				+"relocation_area = ?, personal_qualification = ?, mobile_phone = ?, professional_subs = ?, "
 				+"company_car = ?, sharps = ?, next_salary_review = ?, employee_group = ?, reason_for_contract = ?, "
-				+"location = ?, working_visa = ?, line_manager_position = ?, py_area = ?, mop_fse = ? WHERE ID = ?");
+				+"location = ?, working_visa = ?, line_manager_position = ?, py_area = ?, mop_fse = ?, work_pattern = ? WHERE ID = ?");
 		LIST_NEW_HIRES = conn.prepareStatement("SELECT ID, contract_ref, eeid, surname, forename, position_title, "
 				+"contract_start_date FROM Hires");
 	}
 
+	
+	//ADD WORK PATTERNS SUPPORT!!!!!!!!!!!!!!!!!!!!!!!
 	
 	/**
 	 * Combo Option source setter.
@@ -277,6 +279,7 @@ public class JdbcNewHireRepository implements NewHire {
 			INSERT_EMPLOYEE.setString(54, hire.getDetail("lm_pos_title"));
 			INSERT_EMPLOYEE.setString(55, hire.getDetail("payroll_area"));
 			INSERT_EMPLOYEE.setString(56, hire.getDetail("mop_fse"));
+			INSERT_EMPLOYEE.setInt(56, opts.findID(opts.getWork_patterns(), hire.getDetail("work_pattern")));
 			
 			//Execute SQL query
 			INSERT_EMPLOYEE.executeUpdate();
@@ -413,6 +416,12 @@ public class JdbcNewHireRepository implements NewHire {
 				hireModel.addField("working_visa_paragraph", result.getString("working_visa"));
 				hireModel.addField("payroll_area", result.getString("py_area"));
 				hireModel.addField("mop_fse", result.getString("mop_fse"));
+				try {
+					hireModel.addField("work_pattern", opts.findName(opts.getWork_patterns(), result.getInt("work_pattern")));
+				} catch (ItemNotFoundException e) {
+					logger.log(Level.WARNING, "Couldn't convert work pattern value. Used blank instead.");
+					hireModel.addField("work_pattern", " ");
+				}
 				
 				return hireModel;
 			} else {
@@ -626,7 +635,13 @@ public class JdbcNewHireRepository implements NewHire {
 			UPDATE_EMPLOYEE.setString(54, hire.getDetail("lm_pos_title"));
 			UPDATE_EMPLOYEE.setString(55, hire.getDetail("payroll_area"));
 			UPDATE_EMPLOYEE.setString(56, hire.getDetail("mop_fse"));
-			UPDATE_EMPLOYEE.setLong(57, Long.parseLong(hire.getDetail("ID")));
+			try {
+				UPDATE_EMPLOYEE.setInt(57, opts.findID(opts.getWork_patterns(), hire.getDetail("work_pattern")));
+			} catch (NoSuchElementException | ItemNotFoundException e) {
+				UPDATE_EMPLOYEE.setInt(57, 1);
+				logger.log(Level.WARNING, "Couldn't convert work pattern value. Used blank instead.");
+			}
+			UPDATE_EMPLOYEE.setLong(58, Long.parseLong(hire.getDetail("ID")));
 			
 			if(UPDATE_EMPLOYEE.executeUpdate() == 0){
 				return false;
