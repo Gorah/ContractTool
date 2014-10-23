@@ -15,6 +15,8 @@ import org.apache.poi.xwpf.usermodel.XWPFTable;
 import org.apache.poi.xwpf.usermodel.XWPFTableCell;
 import org.apache.poi.xwpf.usermodel.XWPFTableRow;
 
+import contract.model.Settings.Location;
+
 public class DocxHireModel extends HireAbstractModel {
 	private String filename;
 	private List<XWPFTable> tables;
@@ -185,8 +187,20 @@ public class DocxHireModel extends HireAbstractModel {
 					case 37: addField("reason_for_contract", filterTrailingSpaces(cells.get(1).getText()));
 						break;
 					case 38: 
-				
-						addField("location", cells.get(1).getText().split(" ")[1]);
+						//bind location bit to a string for easy reuse
+						String sourceLocation = cells.get(1).getText();
+						//find corresponding location iterating over locations enum
+						for (Location l : Location.values()){
+							if(sourceLocation.toLowerCase().contains(l.toString().toLowerCase())){
+								//if found location is Shobnall, translate it to "Shobnall Maltings"
+								if(l == Location.Shobnall){
+									addField("location", "Shobnall Maltings");
+								} else {
+									addField("location", l.toString());
+								}
+							}
+						}
+						
 						break;
 					case 39: 
 							//Find if working visa paragraph is needed
