@@ -1046,7 +1046,10 @@ public class NewHire extends SwingView {
 			effDate.setEnabled(false);
 		} else {
 			try {
-				Date sDate = new SimpleDateFormat("dd-MM-yyyy").parse(model.get("start_date"));
+				String startDate = model.get("start_date");
+				startDate = startDate.replace(".", "-");
+				startDate = startDate.replace("/", "-");
+				Date sDate = new SimpleDateFormat("dd-MM-yyyy").parse(startDate);
 				effDate.setDate(sDate);
 				effDate.setEnabled(true);
 				dateTBC.setSelected(false);
