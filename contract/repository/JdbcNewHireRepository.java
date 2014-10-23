@@ -144,7 +144,7 @@ public class JdbcNewHireRepository implements NewHire {
 				logger.log(Level.WARNING, "Couldn't find contract type element. Defaulted to: Permanent");
 				INSERT_EMPLOYEE.setInt(17, 1);
 			}
-			INSERT_EMPLOYEE.setInt(18, Integer.parseInt(hire.getDetail("job_grade")));
+			INSERT_EMPLOYEE.setString(18, hire.getDetail("job_grade"));
 			String[] salArr = hire.getDetail("salary").split(",");
 			INSERT_EMPLOYEE.setFloat(19, Float.parseFloat(salArr[0] + salArr[1]));
 			//add splitting string on comma
@@ -279,7 +279,7 @@ public class JdbcNewHireRepository implements NewHire {
 			INSERT_EMPLOYEE.setString(54, hire.getDetail("lm_pos_title"));
 			INSERT_EMPLOYEE.setString(55, hire.getDetail("payroll_area"));
 			INSERT_EMPLOYEE.setString(56, hire.getDetail("mop_fse"));
-			INSERT_EMPLOYEE.setInt(56, opts.findID(opts.getWork_patterns(), hire.getDetail("work_pattern")));
+			INSERT_EMPLOYEE.setInt(57, opts.findID(opts.getWork_patterns(), hire.getDetail("work_pattern")));
 			
 			//Execute SQL query
 			INSERT_EMPLOYEE.executeUpdate();
@@ -428,6 +428,7 @@ public class JdbcNewHireRepository implements NewHire {
 				throw new EntityNotFoundException();
 			}
 		} catch (SQLException e) {
+			System.out.println(e.getMessage());
 			logger.log(Level.SEVERE, e.getMessage());
 		}
 		return null;
@@ -500,9 +501,13 @@ public class JdbcNewHireRepository implements NewHire {
 				logger.log(Level.WARNING, "Couldn't find contract type element. Defaulted to: Permanent");
 				UPDATE_EMPLOYEE.setInt(17, 1);
 			}
-			UPDATE_EMPLOYEE.setInt(18, Integer.parseInt(hire.getDetail("job_grade")));
-			String[] salArr = hire.getDetail("salary").split(",");
-			UPDATE_EMPLOYEE.setFloat(19, Float.parseFloat(salArr[0] + salArr[1]));
+			UPDATE_EMPLOYEE.setString(18, hire.getDetail("job_grade"));
+			if(hire.getDetail("salary").contains(",")){
+				String[] salArr = hire.getDetail("salary").split(",");
+				UPDATE_EMPLOYEE.setFloat(19, Float.parseFloat(salArr[0] + salArr[1]));
+			} else {
+				UPDATE_EMPLOYEE.setFloat(19, Float.parseFloat(hire.getDetail("salary")));
+			}
 			//add splitting string on comma
 			if(hire.getDetail("addWageType1").isEmpty()){
 				UPDATE_EMPLOYEE.setNull(20, Types.VARCHAR);
